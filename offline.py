@@ -1,0 +1,418 @@
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import styles
+from styles import ICON_CGPA, ICON_CREDITS, ICON_SUBJECTS, ICON_PERFORMANCE, ICON_EDIT, ICON_CALENDAR, ICON_TARGET, render_custom_metric
+from logic import parse_pasted_data, process_combined_data, get_classification, calculate_target_required_gpa
+
+# --- Page Configuration ---
+st.set_page_config(
+    page_title="Academic Tracker", 
+    page_icon="🎓", 
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# --- PERSISTENT DATA STORAGE ---
+@st.cache_resource
+def get_shared_state():
+    return {"df": None}
+
+shared_state = get_shared_state()
+
+# --- APPLY CUSTOM STYLES ---
+styles.apply_styles()
+# --- Navigation Setup ---
+options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER"]
+if "nav_index" not in st.session_state:
+    st.session_state.nav_index = 0
+
+with st.sidebar:
+    st.markdown(f"""
+    <div style="display:flex; flex-direction:column; align-items:center; margin-bottom: 30px; margin-top: 10px;">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f9/Logo_of_the_University_of_Colombo.png/250px-Logo_of_the_University_of_Colombo.png" class="uni-logo">
+        <h1 style="color:#d96c34; font-family:'Oswald', sans-serif; letter-spacing: 2px; margin:0; font-size:1.6rem; text-align:center; text-transform:uppercase;">
+        Academic Tracker
+        </h1>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # NATIVE ZERO-BLINK RADIO NAVIGATION
+    current_page = st.radio("Navigation", options, index=st.session_state.nav_index, key="nav_radio_trigger", label_visibility="collapsed")
+    
+    # Sync index back for buttons
+    st.session_state.nav_index = options.index(current_page)
+    
+    # Bottom Social & Link Footer
+    st.markdown("""
+    <div class="social-footer">
+        <a href="linkedin.com/in/arumugam-abilashan-6916a2157" target="_blank" title="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <a href="https://github.com/Abilash-Nickal" target="_blank" title="GitHub">
+            <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+        <a href="https://abilash-portfolio-5601e.web.app/" target="_blank" title="Web Portal">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        </a>
+        <a href="https://sis.cmb.ac.lk/tech/results/result_sheet" target="_blank" title="SIS Link"> 
+            <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+# ==========================================
+# DATA PREPARATION
+# ==========================================
+df = shared_state["df"]
+included_df = pd.DataFrame()
+total_credits, final_gpa, performance_pct = 0, 0.0, 0.0
+
+if df is not None:
+    df['credits'] = pd.to_numeric(df['credits'], errors='coerce').fillna(0)
+    df['gpv'] = pd.to_numeric(df['gpv'], errors='coerce').fillna(0)
+    included_df = df[df['Include'] == True]
+    
+    total_credits = included_df['credits'].sum()
+    total_gp = (included_df['credits'] * included_df['gpv']).sum()
+    final_gpa = total_gp / total_credits if total_credits > 0 else 0.0
+    performance_pct = (final_gpa / 4.0) * 100
+
+
+# --------- PAGE: HOME ---------
+if current_page == "HOME":
+    standing = get_classification(final_gpa) if df is not None else "AWAITING DATA"
+    st.markdown(f"""
+    <div class="top-header">
+        <div class="logo-text">ACADEMIC TRACKER</div>
+        <div style="margin-left: auto; background:#fbe7dc; color:#d96c34; padding:5px 15px; border-radius:15px; font-family:'Oswald',sans-serif; font-size:0.9rem; border:1px solid #d96c34;">
+            {standing}
+        </div>
+    </div>
+    <h1 class="dashboard-title">HOME</h1>
+    <p class="dashboard-subtitle">Home > Tracker</p>
+    """, unsafe_allow_html=True)
+
+    if df is None:
+        st.info("👈 Please navigate to 'INPUT RESULTS' on the left to load your academic data.")
+        m1, m2, m3, m4 = st.columns(4)
+        with m1: render_custom_metric("FINAL CGPA", "0.00", "+0.00 SINCE LAST SEMESTER", ICON_CGPA, "#2B2D38")
+        with m2: render_custom_metric("TOTAL CREDITS", "0", "AWAITING DATA", ICON_CREDITS, "#87DE96")
+        with m3: render_custom_metric("SUBJECTS PASSED", "0", "AWAITING DATA", ICON_SUBJECTS, "#FA8A76")
+        with m4: render_custom_metric("PERFORMANCE", "0%", "AWAITING DATA", ICON_PERFORMANCE, "#2B2D38")
+    else:
+        # ROW 1: Metric Cards
+        m1, m2, m3, m4 = st.columns(4)
+        with m1: render_custom_metric("FINAL CGPA", f"{final_gpa:.4f}", "+ ACTIVE SEMESTER", ICON_CGPA, "#d96c34")
+        with m2: render_custom_metric("TOTAL CREDITS", f"{int(total_credits)}", "+ ACTIVE SEMESTER", ICON_CREDITS, "#d96c34")
+        with m3: render_custom_metric("SUBJECTS PASSED", f"{len(included_df)}", "+ ACTIVE SEMESTER", ICON_SUBJECTS, "#d96c34")
+        with m4: render_custom_metric("PERFORMANCE", f"{performance_pct:.1f}%", "+ ACTIVE SEMESTER", ICON_PERFORMANCE, "#d96c34")
+
+        # Prepare Graph Data
+        sem_stats = []
+        semesters = included_df.groupby(['academic_level', 'semester'])
+        for (lvl, sem), group in semesters:
+            s_cred = group['credits'].sum()
+            s_pts = (group['credits'] * group['gpv']).sum()
+            sem_stats.append({
+                "Term": f"L{lvl} - S{sem}", 
+                "SGPA": s_pts / s_cred if s_cred > 0 else 0.0, 
+                "Credits": s_cred, 
+                "Subjects": len(group)
+            })
+        df_trends = pd.DataFrame(sem_stats)
+
+        # ROW 2: Layout
+        st.write("") 
+        col_left, col_right = st.columns([1, 3])
+        with col_left:
+            st.markdown('<div class="ui-card"><div class="ui-card-header">GRADE DISTRIBUTION</div>', unsafe_allow_html=True)
+            if not included_df.empty:
+                # Prepare Pie Chart Data
+                grade_counts = included_df['grade'].value_counts().reset_index()
+                grade_counts.columns = ['Grade', 'Count']
+                
+                # Define a consistent peach-navy color scale
+                color_map = {
+                    'A': '#d96c34', 'A-': '#e2875b', 'B+': '#eba181', 'B': '#f3bcad',
+                    'B-': '#fbe7dc', 'C+': '#8c8f9c', 'C': '#1a1c29', 'Other': '#d1d4db'
+                }
+                
+                fig_p = px.pie(grade_counts, values='Count', names='Grade', hole=0.4, 
+                               color='Grade', color_discrete_map=color_map)
+                fig_p.update_traces(textposition='inside', textinfo='percent+label')
+                fig_p.update_layout(
+                    showlegend=False, 
+                    paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+                    margin=dict(l=5, r=5, t=5, b=5), height=230
+                )
+                st.plotly_chart(fig_p, use_container_width=True, config={'displayModeBar': False})
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        with col_right:
+            st.markdown('<div class="ui-card"><div class="ui-card-header">PERCENTAGE (SGPA TREND)</div><div style="padding: 10px;">', unsafe_allow_html=True)
+            if not df_trends.empty:
+                # Graph 1: SGPA Line chart showing exact point values and clear Y-axis
+                fig_l = px.line(df_trends, x="Term", y="SGPA", markers=True, text="SGPA")
+                fig_l.update_traces(
+                    textposition="top center", texttemplate='%{text:.2f}',
+                    line=dict(color='#d96c34', width=2), 
+                    marker=dict(size=8, color='#d96c34', line=dict(color='white', width=2))
+                )
+                fig_l.update_layout(
+                    paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', 
+                    font=dict(color='#8c8f9c'), margin=dict(l=10, r=20, t=25, b=10), height=250, 
+                    xaxis=dict(showgrid=False, title="", showline=True, linecolor='#fbe7dc', tickfont=dict(color='#1a1c29')), 
+                    yaxis=dict(visible=True, showgrid=True, gridcolor='#fbe7dc', range=[0, 4.3], title=dict(text="SGPA Score", font=dict(color='#1a1c29')), showticklabels=True, tickfont=dict(size=11, color='#1a1c29'))
+                )
+                st.plotly_chart(fig_l, use_container_width=True, config={'displayModeBar': False})
+            st.markdown('</div></div>', unsafe_allow_html=True)
+
+        # ROW 3: Visual Insights
+        c1, c2 = st.columns(2)
+        with c1:
+            st.markdown('<div class="bar-chart-header">GRADE COUNTS OVERVIEW</div>', unsafe_allow_html=True)
+            if not included_df.empty:
+                st.markdown('<div style="background-color: rgba(253, 250, 247, 0.4); backdrop-filter: blur(10px); padding: 20px; border-radius: 0 0 2rem 2rem; border: 1px solid rgba(255, 255, 255, 0.8); border-top:none; box-shadow: 0 8px 30px rgba(235, 128, 68, 0.05); margin-bottom: 2rem;">', unsafe_allow_html=True)
+                # Prepare Grade Counts
+                gc = included_df['grade'].value_counts().reset_index()
+                gc.columns = ['Grade', 'Count']
+                gc = gc.sort_values('Grade')
+                
+                fig_gc = px.bar(gc, x='Grade', y='Count', text='Count', color_discrete_sequence=['#d96c34'])
+                fig_gc.update_traces(textposition='outside')
+                fig_gc.update_layout(
+                    paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', 
+                    font=dict(color='#1a1c29', size=11), margin=dict(l=10, r=10, t=25, b=10), height=220, 
+                    xaxis=dict(visible=True, showgrid=False, title="", tickfont=dict(color='#1a1c29')), 
+                    yaxis=dict(visible=True, showgrid=True, gridcolor='rgba(217, 108, 52, 0.1)', title="Count", showticklabels=True, tickfont=dict(color='#1a1c29'))
+                )
+                st.plotly_chart(fig_gc, use_container_width=True, config={'displayModeBar': False})
+                st.markdown('</div>', unsafe_allow_html=True)
+
+        with c2:
+            st.markdown('<div class="bar-chart-header">CREDITS & SUBJECTS PER SEMESTER</div>', unsafe_allow_html=True)
+            if not df_trends.empty:
+                st.markdown('<div style="background-color: rgba(253, 250, 247, 0.4); backdrop-filter: blur(10px); padding: 20px; border-radius: 0 0 2rem 2rem; border: 1px solid rgba(255, 255, 255, 0.8); border-top:none; box-shadow: 0 8px 30px rgba(235, 128, 68, 0.05); margin-bottom: 2rem;">', unsafe_allow_html=True)
+                
+                # Melt dataframe to compare Credits and Subjects side-by-side
+                df_melted = df_trends.melt(id_vars="Term", value_vars=["Credits", "Subjects"], var_name="Metric", value_name="Value")
+                
+                fig_b = px.bar(df_melted, x="Term", y="Value", color="Metric", barmode='group', text="Value", color_discrete_sequence=['#1a1c29', '#d96c34'])
+                fig_b.update_traces(textposition='outside', marker_line_width=0, opacity=1, textfont=dict(color='#1a1c29', size=11))
+                fig_b.update_layout(
+                    paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', 
+                    font=dict(color='#1a1c29', size=11), margin=dict(l=10, r=10, t=25, b=10), height=220, 
+                    xaxis=dict(visible=True, showgrid=False, title="", tickfont=dict(color='#1a1c29')), 
+                    yaxis=dict(visible=True, showgrid=True, gridcolor='rgba(217, 108, 52, 0.1)', title="Count", showticklabels=True, tickfont=dict(color='#1a1c29')),
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, title="")
+                )
+                st.plotly_chart(fig_b, use_container_width=True, config={'displayModeBar': False})
+                st.markdown('</div>', unsafe_allow_html=True)
+
+        st.write("---")
+# --------- PAGE: TARGET TRACKER ---------
+elif current_page == "TARGET TRACKER":
+    st.markdown("""
+    <div class="top-header">
+        <div class="logo-text">ACADEMIC TRACKER</div>
+    </div>
+    <h1 class="dashboard-title">TARGET TRACKER</h1>
+    <p class="dashboard-subtitle">Home > Target Tracker</p>
+    """, unsafe_allow_html=True)
+
+    if df is None:
+        st.info("👈 No data available. Please navigate to 'INPUT RESULTS' first to use the tracker.")
+    else:
+        st.write("---")
+        st.markdown(f"""
+        <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; margin-bottom:20px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
+            <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_TARGET}</div>
+            ACADEMIC TARGET TRACKER
+        </h3>
+        """, unsafe_allow_html=True)
+        t_col1, t_col2 = st.columns([2, 1])
+        
+        with t_col1:
+            st.write("Plan your path to your desired degree classification. Enter your target and total credits for the degree.")
+            target_class = st.selectbox("SET TARGET CLASS", ["FIRST CLASS (3.70)", "2ND UPPER (3.30)", "2ND LOWER (3.00)"], index=1)
+            target_map = {"FIRST CLASS (3.70)": 3.70, "2ND UPPER (3.30)": 3.30, "2ND LOWER (3.00)": 3.00}
+            target_gpa_val = target_map[target_class]
+            
+            total_deg_credits = st.number_input("TOTAL DEGREE CREDITS", min_value=1.0, value=120.0, step=1.0)
+            
+        with t_col2:
+            req_gpa = calculate_target_required_gpa(target_gpa_val, final_gpa, total_credits, total_deg_credits)
+            
+            if req_gpa is None:
+                st.warning("Degree already completed or total credits invalid.")
+            elif req_gpa > 4.0:
+                st.error(f"Mathematically impossible to reach {target_class}. You need {req_gpa:.2f} avg.")
+            elif req_gpa < 0:
+                st.success(f"You have already reached the requirement for {target_class}!")
+            else:
+                st.markdown(f"""
+                <div class="target-card">
+                    <div class="target-label">Min Grade Required</div>
+                    <div class="target-value">{req_gpa:.2f}</div>
+                    <div class="target-label">Avg GPA per Subject</div>
+                </div>
+                """, unsafe_allow_html=True)
+                st.caption(f"Based on {total_deg_credits - total_credits:.0f} remaining credits.")
+
+
+# --------- PAGE: MASTER DATA ---------
+elif current_page == "MASTER DATA":
+    st.markdown("""
+    <div class="top-header">
+        <div class="logo-text">ACADEMIC TRACKER</div>
+    </div>
+    <h1 class="dashboard-title">MASTER DATA</h1>
+    <p class="dashboard-subtitle">Home > Master Data</p>
+    """, unsafe_allow_html=True)
+
+    if df is None:
+        st.info("👈 No data to edit. Please navigate to 'INPUT RESULTS' first.")
+    else:
+        st.markdown(f"""
+        <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; margin-bottom:10px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
+            <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_EDIT}</div>
+            Manage & Edit Course Data
+        </h3>
+        """, unsafe_allow_html=True)
+        st.caption("You can freely edit cells, check/uncheck courses, and instantly affect your dashboard metrics.")
+        
+        column_config = {
+            "Include": st.column_config.CheckboxColumn("Include", default=True),
+            "Order": st.column_config.NumberColumn("Order", min_value=1, step=1, help="Sort items by this value"),
+            "academic_level": st.column_config.TextColumn("Lvl"), "semester": st.column_config.TextColumn("Sem"),
+            "course_code": st.column_config.TextColumn("Code"), "course_title": st.column_config.TextColumn("Title"),
+            "credits": st.column_config.NumberColumn("Crd"), "gpv": st.column_config.NumberColumn("GPV", min_value=0.0, max_value=4.0),
+            "grade": st.column_config.TextColumn("Grade"),
+            "Remarks": st.column_config.TextColumn("Remarks"),
+        }
+        display_cols = ['Order', 'Include', 'academic_level', 'semester', 'course_code', 'course_title', 'credits', 'gpv', 'grade', 'Remarks']
+        
+        # Ensure 'Order' and 'Remarks' exist in df if not already there
+        if 'Order' not in df.columns:
+            df['Order'] = range(1, len(df) + 1)
+        if 'Remarks' not in df.columns:
+            df['Remarks'] = ""
+
+        edited_df = st.data_editor(
+            df[display_cols].sort_values('Order'), 
+            column_config=column_config, 
+            use_container_width=True, 
+            hide_index=True, 
+            num_rows="dynamic", 
+            key="main_editor"
+        )
+        
+        if not edited_df.equals(df):
+            shared_state["df"] = edited_df
+            st.rerun()
+
+# --------- PAGE: SEMESTER OVERVIEW ---------
+elif current_page == "SEMESTER OVERVIEW":
+    st.markdown("""
+    <div class="top-header">
+        <div class="logo-text">ACADEMIC TRACKER</div>
+    </div>
+    <h1 class="dashboard-title">SEMESTER OVERVIEW</h1>
+    <p class="dashboard-subtitle">Home > Overview</p>
+    """, unsafe_allow_html=True)
+
+    if df is None or included_df.empty:
+        st.info("👈 No data available. Please input results first.")
+    else:
+        # Group by level and then semester to create a clean grouped layout
+        levels = sorted(included_df['academic_level'].unique())
+        
+        for level in levels:
+            # 1. Level Header
+            st.markdown(f"""
+            <div style="margin-top: 30px; margin-bottom: 20px;">
+                <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; margin:0; display: flex; align-items: center; gap: 12px; text-transform:uppercase;">
+                    <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_CALENDAR}</div>
+                    ACADEMIC LEVEL {level}
+                </h3>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            level_df = included_df[included_df['academic_level'] == level]
+            sem_groups = sorted(level_df['semester'].unique())
+            num_sems = len(sem_groups)
+            
+            if num_sems > 0:
+                # Dynamic columns perfectly fit the number of semesters (usually 2, splits screen 50/50)
+                card_cols = st.columns(num_sems)
+                
+                # Row 1: The Summary Cards
+                for idx, sem in enumerate(sem_groups):
+                    group = level_df[level_df['semester'] == sem]
+                    s_cred = group['credits'].sum()
+                    s_points = (group['credits'] * group['gpv']).sum()
+                    s_gpa = s_points / s_cred if s_cred > 0 else 0.0
+                    
+                    with card_cols[idx]:
+                        st.markdown(f"""
+                        <div class="ui-card">
+                            <div class="ui-card-header">Sem {sem}</div>
+                            <div class="ui-card-body">
+                                <div class="ui-card-value" style="color:#d96c34;">{s_gpa:.4f}</div>
+                            </div>
+                            <div class="ui-card-subtext">CREDITS: {s_cred} &nbsp;·&nbsp; SUBJECTS: {len(group)}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                
+                # Row 2: The Course Tables (placed directly underneath their respective cards)
+                table_cols = st.columns(num_sems)
+                for idx, sem in enumerate(sem_groups):
+                    group = level_df[level_df['semester'] == sem]
+                    with table_cols[idx]:
+                        display_group = group[['course_title', 'gpv']].copy()
+                        display_group.columns = ['Course', 'GPV']
+                        st.dataframe(display_group, hide_index=True, use_container_width=True)
+
+
+# --------- PAGE: INPUT RESULTS ---------
+elif current_page == "INPUT RESULTS":
+    st.markdown("""
+    <div class="top-header">
+        <div class="logo-text">ACADEMIC TRACKER</div>
+    </div>
+    <h1 class="dashboard-title">INPUT RESULTS</h1>
+    <p class="dashboard-subtitle">Home > Data Entry</p>
+    """, unsafe_allow_html=True)
+
+    st.markdown("### Paste results from your university web portal:")
+    col1, col2 = st.columns(2)
+    with col1:
+        l1_text = st.text_area("Level 1 Results", height=150)
+        l3_text = st.text_area("Level 3 Results (Optional)", height=150)
+    with col2:
+        l2_text = st.text_area("Level 2 Results (Optional)", height=150)
+        l4_text = st.text_area("Level 4 Results (Optional)", height=150)
+
+    st.write("---")
+    
+    if st.button("🚀 PROCESS DATA & VIEW DASHBOARD", type="primary", use_container_width=True):
+        inputs = {"Level 1": l1_text, "Level 2": l2_text, "Level 3": l3_text, "Level 4": l4_text}
+        valid_inputs = {level: text for level, text in inputs.items() if text.strip()}
+        
+        if not valid_inputs:
+            st.error("Paste your data into at least one of the boxes first!")
+        else:
+            combined_parsed_data = []
+            for level, text in valid_inputs.items():
+                parsed_data = parse_pasted_data(text)
+                if parsed_data: combined_parsed_data.extend(parsed_data)
+                    
+            if combined_parsed_data:
+                df_final, error = process_combined_data(combined_parsed_data)
+                if error: st.error(error)
+                else:
+                    shared_state["df"] = df_final
+                    st.session_state.nav_index = options.index("HOME")
+                    st.rerun()
