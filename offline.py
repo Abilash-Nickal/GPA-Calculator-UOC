@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import styles
-from styles import ICON_CGPA, ICON_CREDITS, ICON_SUBJECTS, ICON_PERFORMANCE, ICON_EDIT, ICON_CALENDAR, ICON_TARGET, ICON_HELP, render_custom_metric
+from styles import ICON_CGPA, ICON_CREDITS, ICON_SUBJECTS, ICON_PERFORMANCE, ICON_EDIT, ICON_CALENDAR, ICON_TARGET, ICON_HELP, ICON_COMMENT, render_custom_metric
 from logic import parse_pasted_data, process_combined_data, get_classification, calculate_target_required_gpa
 
 # --- Page Configuration ---
@@ -57,6 +57,9 @@ with st.sidebar:
         </a>
         <a href="https://sis.cmb.ac.lk/tech/results/result_sheet" target="_blank" title="SIS Link"> 
             <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+        </a>
+        <a href="mailto:abilashnickal@gmail.com" title="Send Feedback">
+            {ICON_COMMENT}
         </a>
     </div>
     """, unsafe_allow_html=True)
@@ -428,38 +431,43 @@ elif current_page == "HELP & GUIDE":
     
     st.write("---")
     
-    col_h1, col_h2 = st.columns([1, 1])
+    st.markdown(f"""
+    <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
+        <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_HELP}</div>
+        Data Import Guide
+    </h3>
+    """, unsafe_allow_html=True)
     
-    with col_h1:
-        st.markdown(f"""
-        <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
-            <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_HELP}</div>
-            Data Import Guide
-        </h3>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("""
-        1. Open your **Result Sheet** in the student portal.
-        2. **Select & Copy** the entire results table.
-        3. Navigate to **INPUT RESULTS** in this app.
-        4. **Paste** the copied text and click **PROCESS DATA**.
-        """)
-        st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image.png", caption="1. Copy your results from the University Portal", use_container_width=True)
-        st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image copy.png", caption="2. Paste into the Input Results section", use_container_width=True)
+    st.markdown("""
+    1. Open your **Result Sheet** in the student portal.
+    2. **Select & Copy** the entire results table.
+    3. Navigate to **INPUT RESULTS** in this app.
+    4. **Paste** the copied text and click **PROCESS DATA**.
+    """)
+    st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image.png", caption="1. Copy your results from the University Portal", use_container_width=True)
+    st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image copy.png", caption="2. Paste into the Input Results section", use_container_width=True)
 
-    with col_h2:
-        st.markdown(f"""
-        <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
-            <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_TARGET}</div>
-            Advanced Features
-        </h3>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("**Target Tracker**: Plan your path to First Class or Upper Second by calculating required GPAs for remaining credits.")
-        st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image copy 2.png", caption="Strategic Planning in Target Tracker", use_container_width=True)
-        
-        st.markdown("**Master Data**: Edit course details, add remarks, and reorder subjects for a perfect dashboard overview.")
-        st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image copy 3.png", caption="Managing and reordering in Master Data", use_container_width=True)
+    st.write("---")
+    
+    st.markdown(f"""
+    <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
+        <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_TARGET}</div>
+        Strategic Planning (Target Tracker)
+    </h3>
+    """, unsafe_allow_html=True)
+    st.markdown("Use the **Target Tracker** to calculate exactly what GPA you need in your remaining subjects to reach your goal.")
+    st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image copy 2.png", caption="Strategic Planning in Target Tracker", use_container_width=True)
+
+    st.write("---")
+    
+    st.markdown(f"""
+    <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
+        <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_EDIT}</div>
+        Manage Your Data (Master Data)
+    </h3>
+    """, unsafe_allow_html=True)
+    st.markdown("In **Master Data**, you can manually adjust results, add remarks, and reorder subjects for a perfect dashboard view.")
+    st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image copy 3.png", caption="Managing and reordering in Master Data", use_container_width=True)
 
     st.write("---")
     st.markdown("### Core Features Overview")
