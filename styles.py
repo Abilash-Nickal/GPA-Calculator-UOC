@@ -275,8 +275,8 @@ CSS_STYLES = """
         filter: drop-shadow(0 4px 8px rgba(235,128,68,0.1));
     }
     .ui-notice {
-        background-color: #fbe7dc;
-        border-left: 5px solid #d96c34;
+        background: rgba(217, 108, 52, 0.1);
+        border: 1px solid rgba(217, 108, 52, 0.2);
         padding: 15px 25px;
         border-radius: 12px;
         color: #d96c34;
@@ -286,7 +286,69 @@ CSS_STYLES = """
         display: flex;
         align-items: center;
         gap: 15px;
-        box-shadow: 0 4px 15px rgba(235, 128, 68, 0.05);
+        backdrop-filter: blur(5px);
+    }
+
+    /* --- DARK MODE SUPPORT --- */
+    @media (prefers-color-scheme: dark) {
+        [data-testid="stAppViewContainer"] { 
+            background: linear-gradient(135deg, #12141d 0%, #1a1c29 50%, #12141d 100%) !important; 
+            color: #e0e0e0 !important; 
+        }
+        [data-testid="stSidebar"], [data-testid="stSidebarContent"] { 
+            background-color: rgba(18, 20, 29, 0.8) !important; 
+            border-right: 1px solid rgba(235, 128, 68, 0.2) !important; 
+        }
+        .logo-text, .dashboard-title, .ui-card-value, .target-label { 
+            color: #ffffff !important; 
+        }
+        .ui-card-subtext {
+            color: #ff9e66 !important;
+        }
+        .ui-card { 
+            background-color: rgba(30, 32, 45, 0.7); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); 
+        }
+        .ui-notice {
+            background: rgba(217, 108, 52, 0.15);
+            border: 1px solid rgba(217, 108, 52, 0.3);
+            color: #ff9e66;
+        }
+        .ui-icon-block, .ui-card-header {
+            background-color: rgba(217, 108, 52, 0.2) !important;
+            color: #ff9e66 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        .class-badge { background-color: rgba(255, 255, 255, 0.05) !important; border-color: rgba(255, 255, 255, 0.1) !important; }
+        .class-first { color: #ff9e66 !important; border-color: #ff9e66 !important; }
+        .class-second-upper { color: #3498db !important; border-color: #3498db !important; }
+        .class-second-lower { color: #27ae60 !important; border-color: #27ae60 !important; }
+        
+        div[role="radiogroup"] label p { color: #8c8f9c !important; }
+        div[role="radiogroup"] label:has(input:checked) {
+            background-color: rgba(217, 108, 52, 0.15) !important;
+        }
+        div[role="radiogroup"] label:has(input:checked) p { color: #ff9e66 !important; }
+        
+        .stButton > button {
+            background-color: rgba(217, 108, 52, 0.2) !important;
+            color: #ff9e66 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        .stButton > button:hover {
+            background-color: #d96c34 !important;
+            color: white !important;
+        }
+        
+        div[data-testid="stElementContainer"]:has(.academic-btn-target) + div[data-testid="stElementContainer"] button {
+            background-color: rgba(30, 32, 45, 0.8) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        div[data-testid="stElementContainer"]:has(.academic-btn-target) + div[data-testid="stElementContainer"] button p {
+            color: #ffffff !important;
+        }
     }
 </style>
 """

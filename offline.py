@@ -325,7 +325,7 @@ elif current_page == "SEMESTER OVERVIEW":
     """, unsafe_allow_html=True)
 
     if df is None or included_df.empty:
-        st.info("👈 No data available. Please input results first.")
+        render_notice("No data available. Please input results first.", icon="help")
     else:
         # Group by level and then semester to create a clean grouped layout
         levels = sorted(included_df['academic_level'].unique())
