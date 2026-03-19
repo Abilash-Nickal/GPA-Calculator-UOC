@@ -44,7 +44,7 @@ with st.sidebar:
     st.session_state.nav_index = options.index(current_page)
     
     # Bottom Social & Link Footer
-    st.markdown("""
+    st.markdown(f"""
     <div class="social-footer">
         <a href="linkedin.com/in/arumugam-abilashan-6916a2157" target="_blank" title="LinkedIn">
             <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
@@ -58,8 +58,11 @@ with st.sidebar:
         <a href="https://sis.cmb.ac.lk/tech/results/result_sheet" target="_blank" title="SIS Link"> 
             <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
         </a>
-        <a href="mailto:abilashnickal@gmail.com" title="Send Feedback">
+    </div>
+    <div class="feedback-button-container">
+        <a href="mailto:abilashnickal@gmail.com" class="feedback-button" title="Send Feedback">
             {ICON_COMMENT}
+            <span>FeedBack & Comments</span>
         </a>
     </div>
     """, unsafe_allow_html=True)

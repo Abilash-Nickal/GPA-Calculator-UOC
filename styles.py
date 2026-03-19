@@ -303,3 +303,36 @@ def render_custom_metric(title, value, subtext, icon, color):
     </div>
     """
     st.markdown(html, unsafe_allow_html=True)
+
+    .feedback-button-container {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 30px;
+        margin-top: -10px;
+    }
+    .feedback-button {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(217, 108, 52, 0.1);
+        color: #d96c34 !important;
+        text-decoration: none !important;
+        padding: 10px 30px;
+        border-radius: 15px;
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        letter-spacing: 1px;
+        border: 1px solid rgba(217, 108, 52, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 85%;
+        justify-content: center;
+        text-transform: uppercase;
+    }
+    .feedback-button:hover {
+        background: #d96c34;
+        color: white !important;
+        box-shadow: 0 8px 20px rgba(217, 108, 52, 0.2);
+        transform: translateY(-2px);
+    }
+    .feedback-button svg { width: 18px; height: 18px; fill: currentColor; }
