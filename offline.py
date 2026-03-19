@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import styles
-from styles import ICON_CGPA, ICON_CREDITS, ICON_SUBJECTS, ICON_PERFORMANCE, ICON_EDIT, ICON_CALENDAR, ICON_TARGET, ICON_HELP, ICON_COMMENT, render_custom_metric
+from styles import ICON_CGPA, ICON_CREDITS, ICON_SUBJECTS, ICON_PERFORMANCE, ICON_EDIT, ICON_CALENDAR, ICON_TARGET, ICON_HELP, render_custom_metric
 from logic import parse_pasted_data, process_combined_data, get_classification, calculate_target_required_gpa
 
 # --- Page Configuration ---
