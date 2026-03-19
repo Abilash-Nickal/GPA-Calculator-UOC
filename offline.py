@@ -442,8 +442,8 @@ elif current_page == "HELP & GUIDE":
     3. Navigate to **INPUT RESULTS** in this app.
     4. **Paste** the copied text and click **PROCESS DATA**.
     """)
-    st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image.png", caption="1. Copy your results from the University Portal", use_container_width=True)
-    st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image copy.png", caption="2. Paste into the Input Results section", use_container_width=True)
+    st.image("image.png", caption="1. Copy your results from the University Portal", use_container_width=True)
+    st.image("image copy.png", caption="2. Paste into the Input Results section", use_container_width=True)
 
     st.write("---")
     
@@ -454,7 +454,7 @@ elif current_page == "HELP & GUIDE":
     </h3>
     """, unsafe_allow_html=True)
     st.markdown("Use the **Target Tracker** to calculate exactly what GPA you need in your remaining subjects to reach your goal.")
-    st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image copy 2.png", caption="Strategic Planning in Target Tracker", use_container_width=True)
+    st.image("image copy 2.png", caption="Strategic Planning in Target Tracker", use_container_width=True)
 
     st.write("---")
     
@@ -465,7 +465,7 @@ elif current_page == "HELP & GUIDE":
     </h3>
     """, unsafe_allow_html=True)
     st.markdown("In **Master Data**, you can manually adjust results, add remarks, and reorder subjects for a perfect dashboard view.")
-    st.image("c:/Users/abila/Desktop/hobby projects/GPA Calculator/image copy 3.png", caption="Managing and reordering in Master Data", use_container_width=True)
+    st.image("image copy 3.png", caption="Managing and reordering in Master Data", use_container_width=True)
 
     st.write("---")
     st.markdown("### Core Features Overview")
