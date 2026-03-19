@@ -23,7 +23,7 @@ shared_state = get_shared_state()
 # --- APPLY CUSTOM STYLES ---
 styles.apply_styles()
 # --- Navigation Setup ---
-options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER"]
+options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "HELP & GUIDE"]
 if "nav_index" not in st.session_state:
     st.session_state.nav_index = 0
 
@@ -416,3 +416,60 @@ elif current_page == "INPUT RESULTS":
                     shared_state["df"] = df_final
                     st.session_state.nav_index = options.index("HOME")
                     st.rerun()
+# --------- PAGE: HELP & GUIDE ---------
+elif current_page == "HELP & GUIDE":
+    st.markdown("""
+    <div class="top-header">
+        <div class="logo-text">ACADEMIC TRACKER</div>
+    </div>
+    <h1 class="dashboard-title">HELP & GUIDE</h1>
+    <p class="dashboard-subtitle">Home > Help & Guide</p>
+    """, unsafe_allow_html=True)
+    
+    st.write("---")
+    
+    col_h1, col_h2 = st.columns([1, 1])
+    
+    with col_h1:
+        st.markdown(f"""
+        <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
+            <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_HELP}</div>
+            Core Features
+        </h3>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        - **Dashboard Overview**: Real-time CGPA and SGPA trend analysis.
+        - **Master Data**: Edit, reorder, and add remarks to your course results.
+        - **Semester Overview**: Level-by-level performance breakdown.
+        - **Target Tracker**: Plan your path to First Class or Upper Second.
+        - **Data Import**: Intelligent parsing from university portal results.
+        """ )
+        
+        st.info("💡 **Pro Tip**: Use the 'Order' column in Master Data to perfectly align your subjects.")
+
+    with col_h2:
+        st.markdown(f"""
+        <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
+            <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_EDIT}</div>
+            How to Import Data
+        </h3>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        To import your results from the University Portal:
+        1. Open your **Result Sheet** in the student portal.
+        2. **Select & Copy** the entire results table.
+        3. Navigate to **INPUT RESULTS** in this app.
+        4. **Paste** the copied text and click **PROCESS DATA**.
+        """ )
+        
+        # Display the generated help image
+        st.image("C:/Users/abila/.gemini/antigravity/brain/489798b9-188a-4636-90a7-12d40b1f5391/how_to_copy_results_1773953506853.png", caption="Selecting and copying results from the portal", use_container_width=True)
+
+    st.write("---")
+    st.markdown("### Common Questions")
+    with st.expander("How is the GPA calculated?"):
+        st.write("The software uses the Weighted Average method: Σ(GPV * Credits) / Σ(Credits).")
+    with st.expander("Can I use this offline?"):
+        st.write("Yes! The 'Master Data' feature works entirely in your browser once the app is loaded.")
