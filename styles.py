@@ -13,6 +13,14 @@ CSS_STYLES = """
     }
 
     /* 1. Main Background and Typography */
+    [data-testid="stAppViewContainer"].force-light { 
+        background: linear-gradient(135deg, #fff9f2 0%, #ffece0 50%, #fff3e8 100%) !important; 
+        color: #1a1c29 !important; 
+    }
+    [data-testid="stAppViewContainer"].force-dark { 
+        background: linear-gradient(135deg, #12141d 0%, #1a1c29 50%, #12141d 100%) !important; 
+        color: #e0e0e0 !important; 
+    }
     [data-testid="stAppViewContainer"] { 
         background: linear-gradient(135deg, #fff9f2 0%, #ffece0 50%, #fff3e8 100%) !important; 
         color: #1a1c29 !important; 
@@ -201,11 +209,16 @@ CSS_STYLES = """
     }
 
     /* ICON 6: HELP & GUIDE */
-    div[role="radiogroup"] > div:nth-child(6) label p::before { 
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z' fill='%238c8f9c'/%3E%3C/svg%3E"); 
-    }
     div[role="radiogroup"] > div:nth-child(6) label:has(input:checked) p::before { 
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z' fill='%23d96c34'/%3E%3C/svg%3E"); 
+    }
+
+    /* ICON 7: FEEDBACK */
+    div[role="radiogroup"] > div:nth-child(7) label p::before { 
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z' fill='%238c8f9c'/%3E%3C/svg%3E"); 
+    }
+    div[role="radiogroup"] > div:nth-child(7) label:has(input:checked) p::before { 
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z' fill='%23d96c34'/%3E%3C/svg%3E"); 
     }
     
     .social-footer { 
@@ -350,6 +363,42 @@ CSS_STYLES = """
             color: #ffffff !important;
         }
     }
+
+    /* Force Themes via Classes */
+    .force-dark .logo-text, .force-dark .dashboard-title, .force-dark .ui-card-value, .force-dark .target-label { 
+        color: #ffffff !important; 
+    }
+    .force-dark .ui-card-subtext {
+        color: #ff9e66 !important;
+    }
+    .force-dark .ui-card { 
+        background-color: rgba(30, 32, 45, 0.7) !important; 
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important; 
+    }
+    .force-dark .ui-notice {
+        background: rgba(217, 108, 52, 0.15) !important;
+        border: 1px solid rgba(217, 108, 52, 0.3) !important;
+        color: #ff9e66 !important;
+    }
+    .force-dark div[role="radiogroup"] label p { color: #8c8f9c !important; }
+    .force-dark div[role="radiogroup"] label:has(input:checked) {
+        background-color: rgba(217, 108, 52, 0.15) !important;
+    }
+    .force-dark div[role="radiogroup"] label:has(input:checked) p { color: #ff9e66 !important; }
+    .force-dark .stButton > button {
+        background-color: rgba(217, 108, 52, 0.2) !important;
+        color: #ff9e66 !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    .force-dark div[data-testid="stElementContainer"]:has(.academic-btn-target) + div[data-testid="stElementContainer"] button {
+        background-color: rgba(30, 32, 45, 0.8) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    .force-dark div[data-testid="stElementContainer"]:has(.academic-btn-target) + div[data-testid="stElementContainer"] button p {
+        color: #ffffff !important;
+    }
 </style>
 """
 
@@ -362,9 +411,34 @@ ICON_EDIT = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke=
 ICON_CALENDAR = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>'
 ICON_TARGET = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>'
 ICON_HELP = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+ICON_FEEDBACK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
 
-def apply_styles():
+def apply_styles(theme="Auto"):
     st.markdown(CSS_STYLES, unsafe_allow_html=True)
+    if theme == "Dark":
+        st.markdown("""
+            <script>
+                var container = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
+                container.classList.add('force-dark');
+                container.classList.remove('force-light');
+            </script>
+        """, unsafe_allow_html=True)
+    elif theme == "Light":
+        st.markdown("""
+            <script>
+                var container = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
+                container.classList.add('force-light');
+                container.classList.remove('force-dark');
+            </script>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+            <script>
+                var container = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
+                container.classList.remove('force-dark');
+                container.classList.remove('force-light');
+            </script>
+        """, unsafe_allow_html=True)
 
 def render_custom_metric(title, value, subtext, icon, color):
     html = f"""

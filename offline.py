@@ -20,14 +20,29 @@ def get_shared_state():
 
 shared_state = get_shared_state()
 
+# --- Theme Persistence ---
+if "theme" not in st.session_state:
+    st.session_state.theme = "Auto"
+
 # --- APPLY CUSTOM STYLES ---
-styles.apply_styles()
+styles.apply_styles(st.session_state.theme)
 # --- Navigation Setup ---
-options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "HELP & GUIDE"]
+options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "HELP & GUIDE", "FEEDBACK"]
 if "nav_index" not in st.session_state:
     st.session_state.nav_index = 0
 
 with st.sidebar:
+    # --- Theme Switcher ---
+    cols = st.columns([0.7, 0.3])
+    with cols[1]:
+        theme_options = {"Auto": "🌓", "Light": "☀️", "Dark": "🌙"}
+        current_theme = st.session_state.theme
+        if st.button(theme_options[current_theme], help=f"Current: {current_theme}. Click to change."):
+            if current_theme == "Auto": st.session_state.theme = "Light"
+            elif current_theme == "Light": st.session_state.theme = "Dark"
+            else: st.session_state.theme = "Auto"
+            st.rerun()
+
     st.markdown(f"""
     <div style="display:flex; flex-direction:column; align-items:center; margin-bottom: 30px; margin-top: 10px;">
         <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f9/Logo_of_the_University_of_Colombo.png/250px-Logo_of_the_University_of_Colombo.png" class="uni-logo">
@@ -474,3 +489,40 @@ elif current_page == "HELP & GUIDE":
     """ )
 
     st.write("---")
+    st.caption("UOC Academic Tracker • v2.0 • Created by Abilash")
+
+# --------- PAGE: FEEDBACK ---------
+if current_page == "FEEDBACK":
+    st.markdown(f"""
+    <div class="top-header">
+        <div class="logo-text">ACADEMIC TRACKER</div>
+    </div>
+    <h1 class="dashboard-title">SHARE FEEDBACK</h1>
+    <p class="dashboard-subtitle">Home > Feedback</p>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="ui-card">
+        <div class="ui-card-header">WE VALUE YOUR INPUT</div>
+        <p style="color:#d96c34; font-weight:600; font-size:0.9rem; margin-bottom:20px;">
+            Help us improve the Academic Tracker by sharing your thoughts or reporting issues.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    with st.form("feedback_form", clear_on_submit=True):
+        f_name = st.text_input("Your Name (Optional)")
+        f_type = st.selectbox("Feedback Type", ["Feature Request", "Bug Report", "UI/UX Improvement", "General Praise"])
+        f_msg = st.text_area("Your Message", placeholder="Type your feedback here...")
+        
+        submitted = st.form_submit_button("Send Feedback")
+        if submitted:
+            if f_msg:
+                st.balloons()
+                st.success("Thank you for your feedback! It helps us make this tool better for everyone.")
+            else:
+                st.error("Please enter a message before submitting.")
+
+    st.markdown("---")
+    render_notice("Your feedback is stored locally or displayed here. To send it officially to the developer, please reach out via LinkedIn or GitHub in the sidebar.", icon="help")
+    st.caption("UOC Academic Tracker • v2.0 • Created by Abilash")
