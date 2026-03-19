@@ -8,7 +8,7 @@ from PIL import Image
 import plotly.express as px
 import concurrent.futures
 import styles
-from styles import ICON_CGPA, ICON_CREDITS, ICON_SUBJECTS, ICON_PERFORMANCE, ICON_EDIT, ICON_CALENDAR, ICON_TARGET, render_custom_metric
+from styles import ICON_CGPA, ICON_CREDITS, ICON_SUBJECTS, ICON_PERFORMANCE, ICON_EDIT, ICON_CALENDAR, ICON_TARGET, ICON_HELP, render_custom_metric
 
 # ==========================================
 MY_API_KEY = st.secrets["MY_API_KEY"]
