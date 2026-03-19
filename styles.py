@@ -279,25 +279,25 @@ CSS_STYLES = """
     .feedback-button-container {
         display: flex;
         justify-content: center;
-        padding-bottom: 30px;
-        margin-top: -10px;
+        padding-bottom: 20px;
+        margin-top: 20px;
     }
     .feedback-button {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 8px;
         background: rgba(217, 108, 52, 0.1);
         color: #d96c34 !important;
         text-decoration: none !important;
-        padding: 10px 30px;
-        border-radius: 15px;
+        padding: 6px 20px;
+        border-radius: 10px;
         font-family: 'Oswald', sans-serif;
-        font-size: 0.95rem;
+        font-size: 0.8rem;
         font-weight: 500;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
         border: 1px solid rgba(217, 108, 52, 0.3);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        width: 85%;
+        width: 70%;
         justify-content: center;
         text-transform: uppercase;
     }
