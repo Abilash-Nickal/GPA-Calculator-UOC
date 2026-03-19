@@ -20,29 +20,14 @@ def get_shared_state():
 
 shared_state = get_shared_state()
 
-# --- Theme Persistence ---
-if "theme" not in st.session_state:
-    st.session_state.theme = "Auto"
-
 # --- APPLY CUSTOM STYLES ---
-styles.apply_styles(st.session_state.theme)
+styles.apply_styles()
 # --- Navigation Setup ---
 options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "HELP & GUIDE", "FEEDBACK"]
 if "nav_index" not in st.session_state:
     st.session_state.nav_index = 0
 
 with st.sidebar:
-    # --- Theme Switcher ---
-    cols = st.columns([0.7, 0.3])
-    with cols[1]:
-        theme_options = {"Auto": "🌓", "Light": "☀️", "Dark": "🌙"}
-        current_theme = st.session_state.theme
-        if st.button(theme_options[current_theme], help=f"Current: {current_theme}. Click to change."):
-            if current_theme == "Auto": st.session_state.theme = "Light"
-            elif current_theme == "Light": st.session_state.theme = "Dark"
-            else: st.session_state.theme = "Auto"
-            st.rerun()
-
     st.markdown(f"""
     <div style="display:flex; flex-direction:column; align-items:center; margin-bottom: 30px; margin-top: 10px;">
         <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f9/Logo_of_the_University_of_Colombo.png/250px-Logo_of_the_University_of_Colombo.png" class="uni-logo">

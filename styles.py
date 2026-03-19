@@ -13,14 +13,6 @@ CSS_STYLES = """
     }
 
     /* 1. Main Background and Typography */
-    [data-testid="stAppViewContainer"].force-light { 
-        background: linear-gradient(135deg, #fff9f2 0%, #ffece0 50%, #fff3e8 100%) !important; 
-        color: #1a1c29 !important; 
-    }
-    [data-testid="stAppViewContainer"].force-dark { 
-        background: linear-gradient(135deg, #12141d 0%, #1a1c29 50%, #12141d 100%) !important; 
-        color: #e0e0e0 !important; 
-    }
     [data-testid="stAppViewContainer"] { 
         background: linear-gradient(135deg, #fff9f2 0%, #ffece0 50%, #fff3e8 100%) !important; 
         color: #1a1c29 !important; 
@@ -363,42 +355,6 @@ CSS_STYLES = """
             color: #ffffff !important;
         }
     }
-
-    /* Force Themes via Classes */
-    .force-dark .logo-text, .force-dark .dashboard-title, .force-dark .ui-card-value, .force-dark .target-label { 
-        color: #ffffff !important; 
-    }
-    .force-dark .ui-card-subtext {
-        color: #ff9e66 !important;
-    }
-    .force-dark .ui-card { 
-        background-color: rgba(30, 32, 45, 0.7) !important; 
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important; 
-    }
-    .force-dark .ui-notice {
-        background: rgba(217, 108, 52, 0.15) !important;
-        border: 1px solid rgba(217, 108, 52, 0.3) !important;
-        color: #ff9e66 !important;
-    }
-    .force-dark div[role="radiogroup"] label p { color: #8c8f9c !important; }
-    .force-dark div[role="radiogroup"] label:has(input:checked) {
-        background-color: rgba(217, 108, 52, 0.15) !important;
-    }
-    .force-dark div[role="radiogroup"] label:has(input:checked) p { color: #ff9e66 !important; }
-    .force-dark .stButton > button {
-        background-color: rgba(217, 108, 52, 0.2) !important;
-        color: #ff9e66 !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    }
-    .force-dark div[data-testid="stElementContainer"]:has(.academic-btn-target) + div[data-testid="stElementContainer"] button {
-        background-color: rgba(30, 32, 45, 0.8) !important;
-        color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    }
-    .force-dark div[data-testid="stElementContainer"]:has(.academic-btn-target) + div[data-testid="stElementContainer"] button p {
-        color: #ffffff !important;
-    }
 </style>
 """
 
@@ -413,32 +369,8 @@ ICON_TARGET = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" strok
 ICON_HELP = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
 ICON_FEEDBACK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
 
-def apply_styles(theme="Auto"):
+def apply_styles():
     st.markdown(CSS_STYLES, unsafe_allow_html=True)
-    if theme == "Dark":
-        st.markdown("""
-            <script>
-                var container = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
-                container.classList.add('force-dark');
-                container.classList.remove('force-light');
-            </script>
-        """, unsafe_allow_html=True)
-    elif theme == "Light":
-        st.markdown("""
-            <script>
-                var container = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
-                container.classList.add('force-light');
-                container.classList.remove('force-dark');
-            </script>
-        """, unsafe_allow_html=True)
-    else:
-        st.markdown("""
-            <script>
-                var container = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
-                container.classList.remove('force-dark');
-                container.classList.remove('force-light');
-            </script>
-        """, unsafe_allow_html=True)
 
 def render_custom_metric(title, value, subtext, icon, color):
     html = f"""
