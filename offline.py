@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import styles
-from styles import ICON_CGPA, ICON_CREDITS, ICON_SUBJECTS, ICON_PERFORMANCE, ICON_EDIT, ICON_CALENDAR, ICON_TARGET, ICON_HELP, render_custom_metric
+from styles import ICON_CGPA, ICON_CREDITS, ICON_SUBJECTS, ICON_PERFORMANCE, ICON_EDIT, ICON_CALENDAR, ICON_TARGET, ICON_HELP, render_custom_metric, render_notice
 from logic import parse_pasted_data, process_combined_data, get_classification, calculate_target_required_gpa
 
 # --- Page Configuration ---
@@ -96,7 +96,7 @@ if current_page == "HOME":
     """, unsafe_allow_html=True)
 
     if df is None:
-        st.info("👈 Please navigate to 'INPUT RESULTS' on the left to load your academic data.")
+        render_notice("Please navigate to 'INPUT RESULTS' on the left to load your academic data.", icon="help")
         m1, m2, m3, m4 = st.columns(4)
         with m1: render_custom_metric("FINAL CGPA", "0.00", "+0.00 SINCE LAST SEMESTER", ICON_CGPA, "#2B2D38")
         with m2: render_custom_metric("TOTAL CREDITS", "0", "AWAITING DATA", ICON_CREDITS, "#87DE96")
@@ -224,7 +224,7 @@ elif current_page == "TARGET TRACKER":
     """, unsafe_allow_html=True)
 
     if df is None:
-        st.info("👈 No data available. Please navigate to 'INPUT RESULTS' first to use the tracker.")
+        render_notice("No data available. Please navigate to 'INPUT RESULTS' first to use the tracker.", icon="help")
     else:
         st.write("---")
         st.markdown(f"""
@@ -274,7 +274,7 @@ elif current_page == "MASTER DATA":
     """, unsafe_allow_html=True)
 
     if df is None:
-        st.info("👈 No data to edit. Please navigate to 'INPUT RESULTS' first.")
+        render_notice("No data to edit. Please navigate to 'INPUT RESULTS' first.", icon="edit")
     else:
         st.markdown(f"""
         <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; margin-bottom:10px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">

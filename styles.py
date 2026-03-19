@@ -274,6 +274,20 @@ CSS_STYLES = """
         margin-bottom: 20px;
         filter: drop-shadow(0 4px 8px rgba(235,128,68,0.1));
     }
+    .ui-notice {
+        background-color: #fbe7dc;
+        border-left: 5px solid #d96c34;
+        padding: 15px 25px;
+        border-radius: 12px;
+        color: #d96c34;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+        margin: 20px 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 4px 15px rgba(235, 128, 68, 0.05);
+    }
 </style>
 """
 
@@ -299,6 +313,16 @@ def render_custom_metric(title, value, subtext, icon, color):
             <div class="ui-icon-block">{icon}</div>
         </div>
         <div class="ui-card-subtext">{subtext}</div>
+    </div>
+    """
+    st.markdown(html, unsafe_allow_html=True)
+
+def render_notice(text, icon="info"):
+    icon_svg = ICON_HELP if icon == "help" else ICON_EDIT if icon == "edit" else ICON_TARGET if icon == "target" else ICON_CGPA
+    html = f"""
+    <div class="ui-notice">
+        <div style="width: 24px; height: 24px;">{icon_svg}</div>
+        <div>{text}</div>
     </div>
     """
     st.markdown(html, unsafe_allow_html=True)
