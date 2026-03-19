@@ -23,7 +23,7 @@ shared_state = get_shared_state()
 # --- APPLY CUSTOM STYLES ---
 styles.apply_styles()
 # --- Navigation Setup ---
-options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "HELP & GUIDE", "FEEDBACK"]
+options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "HELP & GUIDE"]
 if "nav_index" not in st.session_state:
     st.session_state.nav_index = 0
 
@@ -61,10 +61,6 @@ with st.sidebar:
     </div>
     </div>
     """, unsafe_allow_html=True)
-    
-    if st.button("💬 FEEDBACK & COMMENTS", use_container_width=True, key="sidebar_fb_btn"):
-        st.session_state.nav_index = options.index("FEEDBACK")
-        st.rerun()
 
 
 # ==========================================
@@ -476,42 +472,5 @@ elif current_page == "HELP & GUIDE":
     st.markdown("""
     - **Dashboard Overview**: Real-time CGPA and SGPA trend analysis.\n    - **Master Data**: Edit, reorder, and add remarks to your course results.\n    - **Semester Overview**: Level-by-level performance breakdown.\n    - **Target Tracker**: Plan your path to success.\n    - **Data Import**: Intelligent parsing from university portal results.
     """ )
-
-# --------- PAGE: FEEDBACK ---------
-elif current_page == "FEEDBACK":
-    st.markdown(f"""
-    <div class="top-header">
-        <div class="logo-text">ACADEMIC TRACKER</div>
-    </div>
-    <h1 class="dashboard-title">FEEDBACK & COMMENTS</h1>
-    <p class="dashboard-subtitle">Home > Feedback</p>
-    """, unsafe_allow_html=True)
-    
-    st.write("---")
-    
-    with st.container():
-        st.markdown(f"""
-        <div style="background: white; padding: 30px; border-radius: 20px; border: 1px solid #fbe7dc; box-shadow: 0 4px 15px rgba(235,128,68,0.05);">
-            <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; margin-top:0;">Send Your Thoughts</h3>
-            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">We value your feedback to improve the Academic Tracker experience.</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        with st.form("feedback_form", clear_on_submit=True):
-            name = st.text_input("Name (Optional)")
-            email = st.text_input("University Email / Contact")
-            category = st.selectbox("Topic", ["Bug Report", "Feature Request", "UI Improvement", "Other"])
-            comment = st.text_area("Your Comments", height=150)
-            
-            submitted = st.form_submit_button("🚀 SUBMIT FEEDBACK")
-            
-            if submitted:
-                if not comment:
-                    st.error("Please provide your comments before submitting.")
-                else:
-                    st.success("Thank you for your feedback! Your message has been prepared for sending.")
-                    # Fallback to mailto link for real submission if user clicks
-                    mailto_link = f"mailto:abilashnickal@gmail.com?subject=Feedback: {category}&body=From: {name} ({email})%0D%0A%0D%0A{comment}"
-                    st.markdown(f'<a href="{mailto_link}" style="display:inline-block; background:#d96c34; color:white; padding:10px 20px; border-radius:10px; font-family:Oswald, sans-serif; text-decoration:none;">📧 CLICK HERE TO OPEN EMAIL SERVICE</a>', unsafe_allow_html=True)
 
     st.write("---")

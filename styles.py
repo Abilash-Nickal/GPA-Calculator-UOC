@@ -274,40 +274,6 @@ CSS_STYLES = """
         margin-bottom: 20px;
         filter: drop-shadow(0 4px 8px rgba(235,128,68,0.1));
     }
-    
-    /* Feedback Button Styles */
-    .feedback-button-container {
-        display: flex;
-        justify-content: center;
-        padding-bottom: 20px;
-        margin-top: 20px;
-    }
-    .feedback-button {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: rgba(217, 108, 52, 0.1);
-        color: #d96c34 !important;
-        text-decoration: none !important;
-        padding: 6px 20px;
-        border-radius: 10px;
-        font-family: 'Oswald', sans-serif;
-        font-size: 0.8rem;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        border: 1px solid rgba(217, 108, 52, 0.3);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        width: 70%;
-        justify-content: center;
-        text-transform: uppercase;
-    }
-    .feedback-button:hover {
-        background: #d96c34;
-        color: white !important;
-        box-shadow: 0 8px 20px rgba(217, 108, 52, 0.2);
-        transform: translateY(-2px);
-    }
-    .feedback-button svg { width: 18px; height: 18px; fill: currentColor; }
 </style>
 """
 
@@ -320,7 +286,6 @@ ICON_EDIT = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke=
 ICON_CALENDAR = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>'
 ICON_TARGET = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>'
 ICON_HELP = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
-ICON_COMMENT = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
 
 def apply_styles():
     st.markdown(CSS_STYLES, unsafe_allow_html=True)
