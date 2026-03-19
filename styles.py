@@ -98,55 +98,55 @@ CSS_STYLES = """
         background-color: #fbe7dc !important;
         color: #d96c34 !important;
         border: 1px solid white !important;
-        border-radius: 20px !important;
-        padding: 0.5rem 2rem !important;
-        font-weight: 800 !important;
-        box-shadow: 0 4px 15px rgba(235,128,68,0.1) !important;
+        border-radius: 12px !important;
+        padding: 10px 24px !important;
+        font-family: 'Oswald', sans-serif !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        height: auto !important;
         transition: all 0.3s ease !important;
     }
     .stButton > button:hover {
-        transform: translateY(-2px) !important;
-        border-color: #d96c34 !important;
-        box-shadow: 0 6px 20px rgba(235,128,68,0.15) !important;
+        background-color: #d96c34 !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(235,128,68,0.2) !important;
     }
 
-    /* 5. Custom Bar Chart Header */
-    .bar-chart-header { background-color: rgba(253, 250, 247, 0.9); color: #1a1c29; border: 1px solid rgba(255, 255, 255, 0.9); font-family: 'Oswald', sans-serif; font-size: 0.9rem; letter-spacing: 1px; padding: 10px 20px; text-transform: uppercase; border-radius: 2rem 2rem 0 0; margin-top: 20px; border-bottom: none; box-shadow: 0 -4px 10px rgba(235, 128, 68, 0.05); }
+    /* Style Tables */
+    [data-testid="stDataFrame"] {
+        background-color: rgba(253, 250, 247, 0.9) !important;
+        border-radius: 1rem !important;
+        padding: 10px !important;
+    }
 
-    /* 6. Inputs & Editors */
-    .stTextArea textarea { background-color: rgba(255,255,255,0.8) !important; color: #1a1c29 !important; border: 1px solid #fbe7dc !important; border-radius: 1rem !important; }
-    [data-testid="stDataFrame"] { background-color: rgba(253, 250, 247, 0.6); border-radius: 1.5rem; padding: 0.5rem; box-shadow: 0 8px 30px rgba(235,128,68,0.05); border: 1px solid rgba(255, 255, 255, 0.8); }
-    footer {visibility: hidden;}
-    
-    /* 7. Zero-Blink SVG Sidebar Navigation (Robust Implementation) */
-    div[role="radiogroup"] label > div:first-child { display: none !important; }
-    div[role="radiogroup"] { gap: 8px !important; }
-    
+    /* Target Class Indicators */
+    .class-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .class-first { background-color: #ffead1; color: #d96c34; border: 1px solid #d96c34; }
+    .class-second-upper { background-color: #e2f4ff; color: #3498db; border: 1px solid #3498db; }
+    .class-second-lower { background-color: #e2fce6; color: #27ae60; border: 1px solid #27ae60; }
+    .class-pass { background-color: #f5f5f5; color: #7f8c8d; border: 1px solid #7f8c8d; }
+
+    /* Sidebar Navigation Premium Icons */
     div[role="radiogroup"] label {
-        padding: 12px 20px !important; 
-        margin-right: 20px !important; 
-        border-radius: 0 25px 25px 0 !important;
-        background-color: transparent !important;
-        border-left: 4px solid transparent !important;
-        transition: all 0.3s ease !important; 
-        cursor: pointer !important; 
+        padding: 12px 15px !important;
+        border-radius: 15px !important;
+        margin-bottom: 5px !important;
+        border: 1px solid transparent !important;
+        transition: all 0.3s ease !important;
     }
-    
-    div[role="radiogroup"] label, 
-    div[role="radiogroup"] label p {
-        color: #8c8f9c !important; 
-        font-family: 'Roboto', sans-serif !important;
-        font-size: 1.05rem !important; 
-        font-weight: 500 !important; 
-        display: flex !important; 
-        align-items: center !important; 
-        margin: 0 !important;
-        width: 100% !important;
+    div[role="radiogroup"] label:hover {
+        background-color: rgba(217, 108, 52, 0.05) !important;
     }
-    
-    div[role="radiogroup"] label:hover { background-color: rgba(235, 128, 68, 0.05) !important; }
-    div[role="radiogroup"] label:hover p { color: #d96c34 !important; }
-    
     div[role="radiogroup"] label:has(input:checked) {
         background-color: #fbe7dc !important;
         border-left: 4px solid #d96c34 !important;
@@ -274,36 +274,8 @@ CSS_STYLES = """
         margin-bottom: 20px;
         filter: drop-shadow(0 4px 8px rgba(235,128,68,0.1));
     }
-</style>
-"""
-
-# --- SVG ICONS FOR METRICS ---
-ICON_CGPA = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="3 17 9 11 13 15 21 7"></polyline></svg>'
-ICON_CREDITS = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>'
-ICON_SUBJECTS = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M4 9h4v11H4zm6-5h4v16h-4zm6 6h4v10h-4z"/></svg>'
-ICON_PERFORMANCE = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>'
-ICON_EDIT = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>'
-ICON_CALENDAR = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>'
-ICON_TARGET = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>'
-ICON_HELP = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
-ICON_COMMENT = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
-
-def apply_styles():
-    st.markdown(CSS_STYLES, unsafe_allow_html=True)
-
-def render_custom_metric(title, value, subtext, icon, color):
-    html = f"""
-    <div class="ui-card">
-        <div class="ui-card-header">{title}</div>
-        <div class="ui-card-body">
-            <div class="ui-card-value">{value}</div>
-            <div class="ui-icon-block">{icon}</div>
-        </div>
-        <div class="ui-card-subtext">{subtext}</div>
-    </div>
-    """
-    st.markdown(html, unsafe_allow_html=True)
-
+    
+    /* Feedback Button Styles */
     .feedback-button-container {
         display: flex;
         justify-content: center;
@@ -336,3 +308,32 @@ def render_custom_metric(title, value, subtext, icon, color):
         transform: translateY(-2px);
     }
     .feedback-button svg { width: 18px; height: 18px; fill: currentColor; }
+</style>
+"""
+
+# --- SVG ICONS FOR METRICS ---
+ICON_CGPA = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="3 17 9 11 13 15 21 7"></polyline></svg>'
+ICON_CREDITS = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>'
+ICON_SUBJECTS = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M4 9h4v11H4zm6-5h4v16h-4zm6 6h4v10h-4z"/></svg>'
+ICON_PERFORMANCE = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>'
+ICON_EDIT = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>'
+ICON_CALENDAR = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>'
+ICON_TARGET = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>'
+ICON_HELP = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+ICON_COMMENT = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
+
+def apply_styles():
+    st.markdown(CSS_STYLES, unsafe_allow_html=True)
+
+def render_custom_metric(title, value, subtext, icon, color):
+    html = f"""
+    <div class="ui-card">
+        <div class="ui-card-header">{title}</div>
+        <div class="ui-card-body">
+            <div class="ui-card-value">{value}</div>
+            <div class="ui-icon-block">{icon}</div>
+        </div>
+        <div class="ui-card-subtext">{subtext}</div>
+    </div>
+    """
+    st.markdown(html, unsafe_allow_html=True)
