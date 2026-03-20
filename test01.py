@@ -15,14 +15,42 @@ MY_API_KEY = st.secrets["MY_API_KEY"]
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="Academic Tracker", 
-    page_icon="📊", 
+    page_title="UOC FOT GPA Calculator | University of Colombo Faculty of Technology",
+    page_icon="🎓",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://abilash-portfolio-5601e.web.app/',
+        'Report a bug': "https://github.com/Abilash-Nickal/GPA-Calculator-UOC/issues",
+        'About': """
+            # UOC FOT GPA Calculator
+            Built for students of the **Faculty of Technology, University of Colombo**.
+            Supports BET, BICT, and BBST degree programs.
+            Developed by Abilash.
+        """
+    }
 )
 
 # Apply global styles
 styles.apply_styles()
+
+# Hidden SEO Block - This helps Google index your app for specific UOC keywords
+st.markdown("""
+    <div style="display:none;">
+        <h1>GPA Calculator for University of Colombo (UOC)</h1>
+        <h2>Faculty of Technology (FOT) - Pitipana Campus</h2>
+        <p>
+            Official-style GPA and CGPA calculator for University of Colombo Technology students. 
+            Compatible with:
+            - Bachelor of Engineering Technology (BET)
+            - Bachelor of Information and Communication Technology (BICT)
+            - Bachelor of Biosystems Technology (BBST)
+            - Instrumentation and Automation, Agriculture, and Environmental Technology.
+        </p>
+        <p>Keywords: UOC GPA, FOT GPA, University of Colombo GPA Calculator, 
+           Abilash GPA, Semester GPA UOC, Colombo University Technology Faculty.</p>
+    </div>
+""", unsafe_allow_html=True)
 
 def extract_gpa_from_image(image, api_key):
     """
