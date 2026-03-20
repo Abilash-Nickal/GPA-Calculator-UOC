@@ -6,6 +6,16 @@ A high-performance, premium GPA tracking dashboard designed specifically for Uni
 
 ---
 
+## 📺 Demo Video
+
+Check out the demo video to see the Academic Tracker in action:
+
+[![Academic Tracker Demo](https://img.youtube.com/vi/kfrPbWMncnc/0.jpg)](https://youtu.be/kfrPbWMncnc)
+
+---
+
+---
+
 ## 🚩 The Problem
 
 Currently, the **University of Colombo Student Information System (SIS)** does not provide a built-in GPA calculation or tracking feature. As a result:

@@ -540,6 +540,16 @@ elif current_page == "HELP & GUIDE":
     
     st.markdown(f"""
     <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
+        <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">:material/play_circle:</div>
+        Demo Video (How to Use)
+    </h3>
+    """, unsafe_allow_html=True)
+    st.video("https://youtu.be/kfrPbWMncnc")
+    
+    st.write("---")
+
+    st.markdown(f"""
+    <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
         <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_HELP}</div>
         Data Import Guide
     </h3>
