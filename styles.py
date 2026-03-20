@@ -382,6 +382,17 @@ ICON_FEEDBACK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" str
 
 def apply_styles():
     st.markdown(CSS_STYLES, unsafe_allow_html=True)
+    
+    # --- PWA META TAGS (Add to Home Screen) ---
+    st.markdown("""
+        <head>
+            <meta name="mobile-web-app-capable" content="yes">
+            <meta name="apple-mobile-web-app-capable" content="yes">
+            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+            <meta name="theme-color" content="#fff9f2">
+            <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/en/thumb/f/f9/Logo_of_the_University_of_Colombo.png/250px-Logo_of_the_University_of_Colombo.png">
+        </head>
+    """, unsafe_allow_html=True)
 
 def render_custom_metric(title, value, subtext, icon, color):
     html = f"""

@@ -591,6 +591,35 @@ elif current_page == "HELP & GUIDE":
     st.image("image copy 3.png", caption="Managing and reordering in Master Data", use_container_width=True)
 
     st.write("---")
+    
+    st.markdown(f"""
+    <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
+        <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">:material/install_mobile:</div>
+        Install as a Mobile App (PWA)
+    </h3>
+    """, unsafe_allow_html=True)
+    
+    col_pwa1, col_pwa2 = st.columns(2)
+    with col_pwa1:
+        st.markdown("""
+        **🍎 For iPhone (Safari)**
+        1. Open Safari and go to your tracker URL.
+        2. Tap the **Share** button (square with arrow up).
+        3. Scroll and tap **"Add to Home Screen"**.
+        4. Tap **"Add"** in the top right.
+        """)
+    with col_pwa2:
+        st.markdown("""
+        **🤖 For Android (Chrome)**
+        1. Open Chrome and go to your tracker URL.
+        2. Tap the **Menu** (three dots ⋮).
+        3. Tap **"Add to Home screen"** or **"Install App"**.
+        4. Tap **"Add"** to confirm.
+        """)
+    
+    st.info("Once installed, the Academic Tracker will appear on your home screen and open in full-screen mode like a native app!")
+
+    st.write("---")
     st.markdown("### Core Features Overview")
     st.markdown("""
     - **Cloud Sync & Local Backup**: Save data locally or sync across devices by logging in.\n    - **Dashboard Overview**: Real-time CGPA and SGPA trend analysis.\n    - **Master Data**: Edit, reorder, and add remarks to your course results.\n    - **Semester Overview**: Level-by-level performance breakdown.\n    - **Target Tracker**: Plan your path to success.\n    - **Data Import**: Intelligent parsing from university portal results.
