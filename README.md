@@ -1,4 +1,4 @@
-# 🎓 Academic Tracker - University of Colombo (UOC)
+#  Academic Tracker - University of Colombo (UOC)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_svg)](https://academic-tracker.streamlit.app)
 [![GitHub](https://img.shields.io/badge/GitHub-Abilash--Nickal-orange?logo=github)](https://github.com/Abilash-Nickal)
 
@@ -6,7 +6,18 @@ A high-performance, premium GPA tracking dashboard designed specifically for Uni
 
 ---
 
-## 🚀 Key Features
+## 🚩 The Problem
+
+Currently, the **University of Colombo Student Information System (SIS)** does not provide a built-in GPA calculation or tracking feature. As a result:
+*   **Manual Effort**: Students are forced to manually type their results into third-party apps or spreadsheets, which is both time-consuming and error-prone.
+*   **Limited Availability**: Many previous third-party tools are no longer maintained or accessible.
+*   **Poor Visualization**: Existing options lack the detailed performance visualization and strategic planning tools needed for effective academic tracking.
+
+**Academic Tracker** solves this by offering a zero-entry, automated way to visualize your academic journey.
+
+---
+
+##  Key Features
 
 *   **Intelligent Portal Parsing**: Simply copy your results table from the UOC student portal and paste it; the system automatically extracts course codes, titles, credits, and GPVs.
 *   **Hybrid Storage System**: 
@@ -20,7 +31,7 @@ A high-performance, premium GPA tracking dashboard designed specifically for Uni
 
 ---
 
-## 🛠️ System Architecture
+##  System Architecture
 
 ### Data Processing Flow
 ```mermaid
@@ -46,7 +57,7 @@ graph LR
 
 ---
 
-## 📸 Visual Guide
+##  Visual Guide
 
 ### 1. Simple Data Import
 Copy your table from the portal and paste it directly. No manual entry required!
@@ -62,7 +73,7 @@ View level-specific stats and track your growth over time.
 
 ---
 
-## 💻 Local Setup
+##  Local Setup
 
 1.  **Clone the Repository**:
     ```bash
@@ -90,6 +101,6 @@ View level-specific stats and track your growth over time.
 
 ---
 
-## 📄 License & Contact
+##  License & Contact
 Developed with ❤️ by **Abilash**. 
 Connect on [LinkedIn](https://www.linkedin.com/in/arumugam-abilashan-6916a2157) or [GitHub](https://github.com/Abilash-Nickal).
