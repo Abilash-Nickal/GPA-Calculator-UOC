@@ -630,16 +630,20 @@ if current_page == "FEEDBACK":
                 import requests
                 try:
                     headers = {
+                        'Accept': 'application/json',
                         'Origin': 'https://academic-tracker.streamlit.app',
-                        'Accept': 'application/json'
+                        'Referer': 'https://academic-tracker.streamlit.app/'
                     }
-                    response = requests.post("https://formsubmit.co/ajax/abilash0asp@gmail.com", headers=headers, data={
-                        "name": f_name if f_name else "Anonymous",
-                        "type": f_type,
-                        "message": f_msg,
-                        "_subject": f"New Academic Tracker Feedback: {f_type}",
-                        "_captcha": "false"
-                    })
+                    # Send as JSON to match FormSubmit AJAX expectations
+                    response = requests.post("https://formsubmit.co/ajax/abilash0asp@gmail.com", 
+                        headers=headers, 
+                        json={
+                            "name": f_name if f_name else "Anonymous",
+                            "type": f_type,
+                            "message": f_msg,
+                            "_subject": f"New Academic Tracker Feedback: {f_type}",
+                            "_captcha": "false"
+                        })
                     
                     if response.status_code == 200:
                         resp_data = response.json()
