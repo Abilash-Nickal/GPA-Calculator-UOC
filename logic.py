@@ -90,7 +90,17 @@ def init_supabase():
     try:
         from st_supabase_connection import SupabaseConnection
         return st.connection("supabase", type=SupabaseConnection)
-    except Exception:
+    except Exception as e:
+        try:
+            # Direct client fallback using secrets
+            from supabase import create_client
+            conf = st.secrets.get("connections", {}).get("supabase", {})
+            url = conf.get("url") or conf.get("SUPABASE_URL")
+            key = conf.get("key") or conf.get("SUPABASE_KEY")
+            if url and key:
+                return create_client(url, key)
+        except Exception as e2:
+            st.error(f"Supabase Connection Failed: {e2}")
         return None
 
 def universal_save(df, user_id=None):
