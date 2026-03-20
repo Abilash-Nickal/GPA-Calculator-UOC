@@ -1,5 +1,5 @@
 #  Academic Tracker - University of Colombo (UOC)
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_svg)](https://academic-tracker.streamlit.app)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_svg)][(https://academic-tracker.streamlit.app)](https://abilashgpacalculatoruocfot.streamlit.app/)
 [![GitHub](https://img.shields.io/badge/GitHub-Abilash--Nickal-orange?logo=github)](https://github.com/Abilash-Nickal)
 
 A high-performance, premium GPA tracking dashboard designed specifically for University of Colombo students. This tool provides intelligent result parsing, real-time performance analytics, and cloud-synchronized data storage.
