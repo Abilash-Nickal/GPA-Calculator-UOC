@@ -3,3 +3,6 @@ pandas
 plotly
 google-generativeai
 Pillow
+st-supabase-connection
+streamlit-local-storage
+streamlit-authenticator

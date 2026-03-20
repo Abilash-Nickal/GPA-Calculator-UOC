@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 import styles
 from styles import ICON_CGPA, ICON_CREDITS, ICON_SUBJECTS, ICON_PERFORMANCE, ICON_EDIT, ICON_CALENDAR, ICON_TARGET, ICON_HELP, render_custom_metric, render_notice
-from logic import parse_pasted_data, process_combined_data, get_classification, calculate_target_required_gpa
+from logic import parse_pasted_data, process_combined_data, get_classification, calculate_target_required_gpa, universal_save, universal_load
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -51,15 +51,15 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 # --- Navigation Setup ---
-options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "HELP & GUIDE", "FEEDBACK"]
+options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "LOGIN / SYNC", "HELP & GUIDE", "FEEDBACK"]
 if "nav_index" not in st.session_state:
     st.session_state.nav_index = 0
 
 with st.sidebar:
     st.markdown(f"""
-    <div style="display:flex; flex-direction:column; align-items:center; margin-bottom: 30px; margin-top: 10px;">
+    <div style="display:flex; flex-direction:column; align-items:center; margin-bottom: 10px; margin-top: 0px;">
         <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f9/Logo_of_the_University_of_Colombo.png/250px-Logo_of_the_University_of_Colombo.png" class="uni-logo">
-        <h1 style="color:#d96c34; font-family:'Oswald', sans-serif; letter-spacing: 2px; margin:0; font-size:1.6rem; text-align:center; text-transform:uppercase;">
+        <h1 style="color:#d96c34; font-family:'Oswald', sans-serif; letter-spacing: 2px; margin:0; font-size:1.4rem; text-align:center; text-transform:uppercase;">
         Academic Tracker
         </h1>
     </div>
@@ -71,10 +71,40 @@ with st.sidebar:
     # Sync index back for buttons
     st.session_state.nav_index = options.index(current_page)
     
+
+    
+    # Auth Logic
+    st.markdown("<hr style='margin: 10px 0;'/>", unsafe_allow_html=True)
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+        st.session_state.user_id = None
+        
+    if not st.session_state.authenticated:
+        st.caption("Status: **Guest Mode** (Local Save)")
+        if st.button("Go to Login Page", icon=":material/login:", use_container_width=True):
+            st.session_state.nav_index = options.index("LOGIN / SYNC")
+            st.rerun()
+    else:
+        st.caption(f"Status: **Logged in** ({st.session_state.user_id})")
+        if st.button("Logout", icon=":material/logout:", use_container_width=True):
+            st.session_state.authenticated = False
+            st.session_state.user_id = None
+            st.rerun()
+
+    if st.button("Save Progress", icon=":material/save:", use_container_width=True):
+        if shared_state["df"] is not None:
+            success, msg = universal_save(shared_state["df"], user_id=st.session_state.user_id)
+            if success:
+                st.success(msg)
+            else:
+                st.error(msg)
+        else:
+            st.warning("No data to save yet!")
+
     # Bottom Social & Link Footer
     st.markdown(f"""
     <div class="social-footer">
-        <a href="linkedin.com/in/arumugam-abilashan-6916a2157" target="_blank" title="LinkedIn">
+        <a href="https://www.linkedin.com/in/arumugam-abilashan-6916a2157" target="_blank" title="LinkedIn">
             <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
         </a>
         <a href="https://github.com/Abilash-Nickal" target="_blank" title="GitHub">
@@ -87,13 +117,19 @@ with st.sidebar:
             <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
         </a>
     </div>
-    </div>
     """, unsafe_allow_html=True)
 
 
 # ==========================================
 # DATA PREPARATION
 # ==========================================
+# Try Universal Load once if df is None
+if shared_state["df"] is None:
+    uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
+    init_df, load_msg = universal_load(user_id=uid)
+    if init_df is not None and not init_df.empty:
+        shared_state["df"] = init_df
+
 df = shared_state["df"]
 included_df = pd.DataFrame()
 total_credits, final_gpa, performance_pct = 0, 0.0, 0.0
@@ -340,6 +376,8 @@ elif current_page == "MASTER DATA":
         
         if not edited_df.equals(df):
             shared_state["df"] = edited_df
+            uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
+            universal_save(edited_df, user_id=uid)
             st.rerun()
 
 # --------- PAGE: SEMESTER OVERVIEW ---------
@@ -443,8 +481,51 @@ elif current_page == "INPUT RESULTS":
                 if error: st.error(error)
                 else:
                     shared_state["df"] = df_final
+                    uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
+                    universal_save(df_final, user_id=uid)
                     st.session_state.nav_index = options.index("HOME")
                     st.rerun()
+# --------- PAGE: LOGIN / SYNC ---------
+elif current_page == "LOGIN / SYNC":
+    st.markdown("""
+    <div class="top-header">
+        <div class="logo-text">ACADEMIC TRACKER</div>
+    </div>
+    <h1 class="dashboard-title">CLOUD SYNC & LOGIN</h1>
+    <p class="dashboard-subtitle">Home > Login</p>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown('<div class="ui-card">', unsafe_allow_html=True)
+        st.markdown('<div class="ui-card-header" style="top:-15px;">AUTHENTICATION</div>', unsafe_allow_html=True)
+        
+        if not st.session_state.authenticated:
+            st.info("Guest Mode Active. Your data is currently saving to the local browser. Login to sync with the cloud.")
+            cloud_user = st.text_input("Enter Student ID to Login")
+            
+            if st.button("Login to Cloud", icon=":material/login:", type="primary", use_container_width=True):
+                if cloud_user:
+                    st.session_state.authenticated = True
+                    st.session_state.user_id = cloud_user
+                    cloud_df, msg = universal_load(user_id=cloud_user)
+                    if cloud_df is not None and not cloud_df.empty:
+                        shared_state["df"] = cloud_df
+                    st.session_state.nav_index = options.index("HOME")
+                    st.rerun()
+                else:
+                    st.error("Please enter a valid Student ID.")
+        else:
+            st.success(f"You are securely logged in as: **{st.session_state.user_id}**")
+            st.write("Your data is syncing with the cloud database.")
+            if st.button("Logout", icon=":material/logout:", use_container_width=True):
+                st.session_state.authenticated = False
+                st.session_state.user_id = None
+                st.session_state.nav_index = options.index("HOME")
+                st.rerun()
+                
+        st.markdown('</div>', unsafe_allow_html=True)
+
 # --------- PAGE: HELP & GUIDE ---------
 elif current_page == "HELP & GUIDE":
     st.markdown("""
@@ -477,6 +558,20 @@ elif current_page == "HELP & GUIDE":
     
     st.markdown(f"""
     <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
+        <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_CGPA}</div>
+        Data Storage & Cloud Sync
+    </h3>
+    """, unsafe_allow_html=True)
+    st.markdown("""
+    **Never Lose Your Progress!**
+    - **Guest Mode (Local Save):** By default, clicking **Save Progress** securely stores your data right inside your web browser.
+    - **Create an Account (Cloud Sync):** Go to the **LOGIN / SYNC** page and enter your Student ID (this automatically creates your account!). Once logged in, your tracker data is securely synced to the cloud so you can access it from your phone, laptop, or any other device.
+    """)
+
+    st.write("---")
+    
+    st.markdown(f"""
+    <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; display:flex; align-items:center; gap:12px; text-transform:uppercase;">
         <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;">{ICON_TARGET}</div>
         Strategic Planning (Target Tracker)
     </h3>
@@ -498,7 +593,7 @@ elif current_page == "HELP & GUIDE":
     st.write("---")
     st.markdown("### Core Features Overview")
     st.markdown("""
-    - **Dashboard Overview**: Real-time CGPA and SGPA trend analysis.\n    - **Master Data**: Edit, reorder, and add remarks to your course results.\n    - **Semester Overview**: Level-by-level performance breakdown.\n    - **Target Tracker**: Plan your path to success.\n    - **Data Import**: Intelligent parsing from university portal results.
+    - **Cloud Sync & Local Backup**: Save data locally or sync across devices by logging in.\n    - **Dashboard Overview**: Real-time CGPA and SGPA trend analysis.\n    - **Master Data**: Edit, reorder, and add remarks to your course results.\n    - **Semester Overview**: Level-by-level performance breakdown.\n    - **Target Tracker**: Plan your path to success.\n    - **Data Import**: Intelligent parsing from university portal results.
     """ )
 
     st.write("---")
@@ -531,11 +626,36 @@ if current_page == "FEEDBACK":
         submitted = st.form_submit_button("Send Feedback")
         if submitted:
             if f_msg:
-                st.balloons()
-                st.success("Thank you for your feedback! It helps us make this tool better for everyone.")
+                # Send email directly via FormSubmit AJAX API
+                import requests
+                try:
+                    headers = {
+                        'Origin': 'https://academic-tracker.streamlit.app',
+                        'Accept': 'application/json'
+                    }
+                    response = requests.post("https://formsubmit.co/ajax/abilash0asp@gmail.com", headers=headers, data={
+                        "name": f_name if f_name else "Anonymous",
+                        "type": f_type,
+                        "message": f_msg,
+                        "_subject": f"New Academic Tracker Feedback: {f_type}",
+                        "_captcha": "false"
+                    })
+                    
+                    if response.status_code == 200:
+                        resp_data = response.json()
+                        if str(resp_data.get("success", "")).lower() == "false":
+                            if "Activation" in resp_data.get("message", "") or "actived" in resp_data.get("message", ""):
+                                st.warning("⚠️ One-Time Activation Required! FormSubmit has just sent an email to your address. Please click 'Activate Form' in that email (check spam!) so you can receive future feedbacks.")
+                            else:
+                                st.error(f"FormSubmit Error: {resp_data.get('message', 'Unknown')}")
+                        else:
+                            st.balloons()
+                            st.success("Thank you! Your feedback has been sent directly to the developer.")
+                    else:
+                        st.error("Failed to send feedback. Please try again later.")
+                except Exception as e:
+                    st.error(f"Error connecting to mail server: {e}")
             else:
                 st.error("Please enter a message before submitting.")
 
-    st.markdown("---")
-    render_notice("Your feedback is stored locally or displayed here. To send it officially to the developer, please reach out via LinkedIn or GitHub in the sidebar.", icon="help")
     st.caption("UOC Academic Tracker • v2.0 • Created by Abilash")

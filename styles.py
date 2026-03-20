@@ -138,9 +138,9 @@ CSS_STYLES = """
 
     /* Sidebar Navigation Premium Icons */
     div[role="radiogroup"] label {
-        padding: 12px 15px !important;
+        padding: 8px 15px !important;
         border-radius: 15px !important;
-        margin-bottom: 5px !important;
+        margin-bottom: 2px !important;
         border: 1px solid transparent !important;
         transition: all 0.3s ease !important;
     }
@@ -200,16 +200,27 @@ CSS_STYLES = """
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12.5c-2.48 0-4.5 2.02-4.5 4.5s2.02 4.5 4.5 4.5 4.5-2.02 4.5-4.5-2.02-4.5-4.5-4.5zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z' fill='%23d96c34'/%3E%3C/svg%3E"); 
     }
 
-    /* ICON 6: HELP & GUIDE */
+    /* ICON 6: LOGIN / SYNC */
+    div[role="radiogroup"] > div:nth-child(6) label p::before { 
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z' fill='%238c8f9c'/%3E%3C/svg%3E"); 
+    }
     div[role="radiogroup"] > div:nth-child(6) label:has(input:checked) p::before { 
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z' fill='%23d96c34'/%3E%3C/svg%3E"); 
+    }
+
+    /* ICON 7: HELP & GUIDE */
+    div[role="radiogroup"] > div:nth-child(7) label p::before { 
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z' fill='%238c8f9c'/%3E%3C/svg%3E"); 
+    }
+    div[role="radiogroup"] > div:nth-child(7) label:has(input:checked) p::before { 
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z' fill='%23d96c34'/%3E%3C/svg%3E"); 
     }
 
-    /* ICON 7: FEEDBACK */
-    div[role="radiogroup"] > div:nth-child(7) label p::before { 
+    /* ICON 8: FEEDBACK */
+    div[role="radiogroup"] > div:nth-child(8) label p::before { 
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z' fill='%238c8f9c'/%3E%3C/svg%3E"); 
     }
-    div[role="radiogroup"] > div:nth-child(7) label:has(input:checked) p::before { 
+    div[role="radiogroup"] > div:nth-child(8) label:has(input:checked) p::before { 
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z' fill='%23d96c34'/%3E%3C/svg%3E"); 
     }
     
@@ -218,14 +229,14 @@ CSS_STYLES = """
         flex-direction: row; 
         justify-content: center;
         gap: 20px; 
-        padding-top: 30px;
-        padding-bottom: 20px;
-        margin-top: 40px;
+        padding-top: 15px;
+        padding-bottom: 10px;
+        margin-top: 15px;
         border-top: 1px solid rgba(235, 128, 68, 0.1);
     }
-    .social-footer a { color: #8c8f9c !important; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
-    .social-footer a:hover { color: #d96c34 !important; transform: translateY(-2px); }
-    .social-footer svg { width: 24px; height: 24px; fill: currentColor; }
+    .social-footer a, .social-header a { color: #8c8f9c !important; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
+    .social-footer a:hover, .social-header a:hover { color: #d96c34 !important; transform: translateY(-2px); }
+    .social-footer svg, .social-header svg { width: 24px; height: 24px; fill: currentColor; }
     
     /* Academic Button Target (Glassmorphism update) */
     div[data-testid="stElementContainer"]:has(.academic-btn-target) + div[data-testid="stElementContainer"] button {
@@ -275,8 +286,8 @@ CSS_STYLES = """
         letter-spacing: 1px;
     }
     .uni-logo {
-        width: 100px;
-        margin-bottom: 20px;
+        width: 75px;
+        margin-bottom: 10px;
         filter: drop-shadow(0 4px 8px rgba(235,128,68,0.1));
     }
     .ui-notice {

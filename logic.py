@@ -84,3 +84,71 @@ def calculate_target_required_gpa(target_gpa, current_gpa, current_credits, tota
     required_gp = (target_gpa * total_credits) - (current_gpa * current_credits)
     required_avg = required_gp / remaining_credits
     return required_avg
+
+def init_supabase():
+    import streamlit as st
+    try:
+        from st_supabase_connection import SupabaseConnection
+        return st.connection("supabase", type=SupabaseConnection)
+    except Exception:
+        return None
+
+def universal_save(df, user_id=None):
+    """Saves DataFrame locally or to Supabase depending on auth status."""
+    import json
+    import streamlit as st
+    from streamlit_local_storage import LocalStorage
+    
+    if df is None:
+        return False, "No data to save"
+        
+    data_json = df.to_json(orient="records")
+    
+    if user_id:
+        conn = init_supabase()
+        if conn:
+            try:
+                # Upsert into Supabase
+                conn.table("gpa_records").upsert(
+                    {"user_id": user_id, "gpa_json": json.loads(data_json)}
+                ).execute()
+                return True, "Cloud Save Successful"
+            except Exception as e:
+                return False, f"Cloud Error: {e}"
+        else:
+            return False, "Cloud Connection Failed"
+    else:
+        # Local save
+        localS = LocalStorage()
+        localS.setItem("guest_gpa_data", data_json)
+        return True, "Local Save Successful"
+
+def universal_load(user_id=None):
+    """Loads DataFrame from local storage or Supabase."""
+    import pandas as pd
+    import json
+    import streamlit as st
+    from streamlit_local_storage import LocalStorage
+    
+    if user_id:
+        # Load from Cloud
+        conn = init_supabase()
+        if conn:
+            try:
+                result = conn.table("gpa_records").select("gpa_json").eq("user_id", user_id).execute()
+                if result.data and len(result.data) > 0:
+                    json_data = result.data[0].get("gpa_json", [])
+                    return pd.DataFrame(json_data), "Loaded from Cloud"
+            except Exception as e:
+                pass
+    
+    # Try Local load fallback
+    localS = LocalStorage()
+    local_data = localS.getItem("guest_gpa_data")
+    if local_data:
+        try:
+            return pd.read_json(local_data), "Loaded Locally"
+        except:
+            pass
+            
+    return None, "No data found"
