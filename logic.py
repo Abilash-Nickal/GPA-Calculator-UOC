@@ -56,11 +56,11 @@ def process_combined_data(all_data):
         best_idx = group['gpv'].idxmax()
         best_row = group.loc[best_idx].copy()
         
-        # Check if the course was repeated
-        is_repeat = (len(group) > 1) or any(group['registered_type'].astype(str).str.contains('Repeat', case=False, na=False))
+        # Capping only applies to 'Repeat' registration types
+        is_repeat_type = str(best_row.get('registered_type', '')).lower() == 'repeat'
         best_row['Include'] = True 
         
-        if is_repeat:
+        if is_repeat_type:
             # According to university rules, repeat passes are capped at C (2.0)
             if best_row['gpv'] > 2.0:
                 best_row['original_gpv'] = best_row['gpv']
@@ -68,6 +68,8 @@ def process_combined_data(all_data):
                 best_row['Remarks'] = 'Repeated (Capped C)'
             else:
                 best_row['Remarks'] = 'Repeated'
+        elif any(group['registered_type'].astype(str).str.contains('Medical', case=False, na=False)):
+            best_row['Remarks'] = 'Medical'
         else:
             best_row['Remarks'] = 'Standard'
         final_rows.append(best_row)
