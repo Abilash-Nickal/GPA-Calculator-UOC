@@ -78,26 +78,35 @@ with st.sidebar:
         
     if not st.session_state.authenticated:
         st.caption("Status: **Guest Mode** (Local Save)")
-        if st.button("Go to Login Page", icon=":material/login:", use_container_width=True):
+        if st.button("Login / Create Account", icon=":material/login:", type="primary", use_container_width=True):
             st.session_state.nav_index = options.index("LOGIN / SYNC")
             st.rerun()
+        if st.button("Save Locally (Guest)", icon=":material/save:", use_container_width=True):
+            if st.session_state.df is not None:
+                success, msg = universal_save(st.session_state.df, user_id=None)
+                if success:
+                    st.success("Saved to your browser.")
+                    st.caption("💡 Login to sync across devices.")
+                else:
+                    st.error(msg)
+            else:
+                st.warning("No data to save yet!")
     else:
         st.caption(f"Status: **Logged in** ({st.session_state.user_id})")
+        if st.button("Save Progress", icon=":material/save:", type="primary", use_container_width=True):
+            if st.session_state.df is not None:
+                success, msg = universal_save(st.session_state.df, user_id=st.session_state.user_id)
+                if success:
+                    st.success(msg)
+                else:
+                    st.error(msg)
+            else:
+                st.warning("No data to save yet!")
         if st.button("Logout", icon=":material/logout:", use_container_width=True):
             st.session_state.authenticated = False
             st.session_state.user_id = None
-            st.session_state.df = None  # Clear data on logout so other users don't see it
+            st.session_state.df = None
             st.rerun()
-
-    if st.button("Save Progress", icon=":material/save:", use_container_width=True):
-        if st.session_state.df is not None:
-            success, msg = universal_save(st.session_state.df, user_id=st.session_state.user_id)
-            if success:
-                st.success(msg)
-            else:
-                st.error(msg)
-        else:
-            st.warning("No data to save yet!")
 
     # Bottom Social & Link Footer
     st.markdown(f"""
