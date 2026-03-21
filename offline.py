@@ -48,9 +48,11 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 # --- Navigation Setup ---
-options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "LOGIN / SYNC", "HELP & GUIDE", "FEEDBACK"]
+options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "HELP & GUIDE", "FEEDBACK"]
 if "nav_index" not in st.session_state:
     st.session_state.nav_index = 0
+if "show_login" not in st.session_state:
+    st.session_state.show_login = False
 if "target_class" not in st.session_state:
     st.session_state.target_class = "2ND UPPER (3.30)"
 if "total_deg_credits" not in st.session_state:
@@ -83,8 +85,7 @@ with st.sidebar:
     if not st.session_state.authenticated:
         st.caption("Status: **Guest Mode** (Local Save)")
         if st.button("Login / Create Account", icon=":material/login:", type="primary", use_container_width=True):
-            st.session_state.nav_index = options.index("LOGIN / SYNC")
-            st.session_state.pop("nav_radio_trigger", None)
+            st.session_state.show_login = True
             st.rerun()
         if st.button("Save Locally (Guest)", icon=":material/save:", use_container_width=True):
             if st.session_state.df is not None:
@@ -157,6 +158,55 @@ if df is not None:
     final_gpa = total_gp / total_credits if total_credits > 0 else 0.0
     performance_pct = (final_gpa / 4.0) * 100
 
+
+# ==========================================
+# PAGE CONTENT RENDERING
+# ==========================================
+
+# RENDER LOGIN UI IF REQUESTED (AS AN OVERLAY)
+if st.session_state.show_login and not st.session_state.authenticated:
+    st.markdown("""
+    <div class="top-header">
+        <div class="logo-text">ACADEMIC TRACKER</div>
+    </div>
+    <h1 class="dashboard-title">CLOUD SYNC & LOGIN</h1>
+    <p class="dashboard-subtitle">Home > Login</p>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown('<div class="ui-card">', unsafe_allow_html=True)
+        st.markdown('<div class="ui-card-header" style="top:-15px;">AUTHENTICATION</div>', unsafe_allow_html=True)
+        
+        st.info("Guest Mode Active. Your data is currently saving to the local browser. Login to sync with the cloud.")
+        cloud_user = st.text_input("Enter Student ID to Login")
+        
+        login_col1, login_col2 = st.columns(2)
+        with login_col1:
+            if st.button("Login to Cloud", icon=":material/login:", type="primary", use_container_width=True):
+                if cloud_user:
+                    st.session_state.authenticated = True
+                    st.session_state.user_id = cloud_user
+                    st.session_state.show_login = False
+                    # Always reset data on login and load fresh from cloud
+                    st.session_state.df = None
+                    cloud_df, msg = universal_load(user_id=cloud_user)
+                    if cloud_df is not None and not cloud_df.empty:
+                        st.session_state.df = cloud_df
+                    st.rerun()
+                else:
+                    st.error("Please enter a valid Student ID.")
+        with login_col2:
+            if st.button("Cancel", use_container_width=True):
+                st.session_state.show_login = False
+                st.rerun()
+                
+        st.markdown('</div>', unsafe_allow_html=True)
+    st.stop() # Prevents rendering of any other page content while login is active
+
+# Ensure show_login is False if already authenticated
+if st.session_state.authenticated:
+    st.session_state.show_login = False
 
 # --------- PAGE: HOME ---------
 if current_page == "HOME":
@@ -595,51 +645,6 @@ elif current_page == "INPUT RESULTS":
                     st.session_state.pending_save = True
                     st.rerun()
 # --------- PAGE: LOGIN / SYNC ---------
-elif current_page == "LOGIN / SYNC":
-    st.markdown("""
-    <div class="top-header">
-        <div class="logo-text">ACADEMIC TRACKER</div>
-    </div>
-    <h1 class="dashboard-title">CLOUD SYNC & LOGIN</h1>
-    <p class="dashboard-subtitle">Home > Login</p>
-    """, unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.markdown('<div class="ui-card">', unsafe_allow_html=True)
-        st.markdown('<div class="ui-card-header" style="top:-15px;">AUTHENTICATION</div>', unsafe_allow_html=True)
-        
-        if not st.session_state.authenticated:
-            st.info("Guest Mode Active. Your data is currently saving to the local browser. Login to sync with the cloud.")
-            cloud_user = st.text_input("Enter Student ID to Login")
-            
-            if st.button("Login to Cloud", icon=":material/login:", type="primary", use_container_width=True):
-                if cloud_user:
-                    st.session_state.authenticated = True
-                    st.session_state.user_id = cloud_user
-                    # Always reset data on login and load fresh from cloud
-                    st.session_state.df = None
-                    cloud_df, msg = universal_load(user_id=cloud_user)
-                    if cloud_df is not None and not cloud_df.empty:
-                        st.session_state.df = cloud_df
-                    st.session_state.nav_index = options.index("HOME")
-                    st.session_state.pop("nav_radio_trigger", None)
-                    st.rerun()
-                else:
-                    st.error("Please enter a valid Student ID.")
-        else:
-            st.success(f"You are securely logged in as: **{st.session_state.user_id}**")
-            st.write("Your data is syncing with the cloud database.")
-            if st.button("Logout", icon=":material/logout:", use_container_width=True):
-                st.session_state.authenticated = False
-                st.session_state.user_id = None
-                st.session_state.df = None  # Clear data on logout
-                st.session_state.nav_index = options.index("HOME")
-                st.session_state.pop("nav_radio_trigger", None)
-                st.rerun()
-                
-        st.markdown('</div>', unsafe_allow_html=True)
-
 # --------- PAGE: HELP & GUIDE ---------
 elif current_page == "HELP & GUIDE":
     st.markdown("""
