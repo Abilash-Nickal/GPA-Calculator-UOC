@@ -183,6 +183,77 @@ if current_page == "HOME":
         with m3: render_custom_metric("SUBJECTS PASSED", f"{len(included_df)}", "+ ACTIVE SEMESTER", ICON_SUBJECTS, "#d96c34")
         with m4: render_custom_metric("PERFORMANCE", f"{performance_pct:.1f}%", "+ ACTIVE SEMESTER", ICON_PERFORMANCE, "#d96c34")
 
+        # --- DEGREE TARGET SNAPSHOT ROW ---
+        st.write("")
+        DEFAULT_TOTAL_CREDITS = 120.0
+        class_thresholds = [
+            ("FIRST CLASS",  3.70, "#d4a017"),
+            ("2ND UPPER",    3.30, "#a8a8a8"),
+            ("2ND LOWER",    3.00, "#cd7f32"),
+        ]
+        # Find the next reachable class above current standing
+        next_target = None
+        for label, threshold, color in class_thresholds:
+            if final_gpa < threshold:
+                from logic import calculate_target_required_gpa
+                needed = calculate_target_required_gpa(threshold, final_gpa, total_credits, DEFAULT_TOTAL_CREDITS)
+                next_target = (label, threshold, color, needed)
+                break
+
+        t1, t2, t3, t4 = st.columns(4)
+        with t1:
+            cls_colors = {"FIRST CLASS": "#d4a017", "2ND UPPER": "#a8a8a8", "2ND LOWER": "#cd7f32", "GENERAL": "#8c8f9c", "AWAITING DATA": "#8c8f9c"}
+            badge_color = cls_colors.get(standing, "#8c8f9c")
+            st.markdown(f"""
+            <div style="background:rgba(253,250,247,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.8);
+                        border-radius:1rem; padding:16px 20px; text-align:center;">
+                <div style="font-size:0.7rem; color:#8c8f9c; font-family:'Oswald',sans-serif; letter-spacing:1.5px; margin-bottom:6px;">CURRENT STANDING</div>
+                <div style="font-size:1.1rem; font-weight:800; color:{badge_color}; font-family:'Oswald',sans-serif;">{standing}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with t2:
+            if next_target:
+                lbl, thr, col, needed = next_target
+                if needed is not None and 0 <= needed <= 4.0:
+                    st.markdown(f"""
+                    <div style="background:rgba(253,250,247,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.8);
+                                border-radius:1rem; padding:16px 20px; text-align:center;">
+                        <div style="font-size:0.7rem; color:#8c8f9c; font-family:'Oswald',sans-serif; letter-spacing:1.5px; margin-bottom:6px;">TARGET: {lbl}</div>
+                        <div style="font-size:1.1rem; font-weight:800; color:{col}; font-family:'Oswald',sans-serif;">{needed:.2f} avg needed</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                elif needed is not None and needed > 4.0:
+                    st.markdown(f"""
+                    <div style="background:rgba(253,250,247,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.8);
+                                border-radius:1rem; padding:16px 20px; text-align:center;">
+                        <div style="font-size:0.7rem; color:#8c8f9c; font-family:'Oswald',sans-serif; letter-spacing:1.5px; margin-bottom:6px;">TARGET: {lbl}</div>
+                        <div style="font-size:1.1rem; font-weight:800; color:#e74c3c; font-family:'Oswald',sans-serif;">Not Achievable</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+        with t3:
+            remaining = DEFAULT_TOTAL_CREDITS - total_credits
+            pct_done = min((total_credits / DEFAULT_TOTAL_CREDITS) * 100, 100)
+            st.markdown(f"""
+            <div style="background:rgba(253,250,247,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.8);
+                        border-radius:1rem; padding:16px 20px; text-align:center;">
+                <div style="font-size:0.7rem; color:#8c8f9c; font-family:'Oswald',sans-serif; letter-spacing:1.5px; margin-bottom:6px;">DEGREE PROGRESS</div>
+                <div style="font-size:1.1rem; font-weight:800; color:#d96c34; font-family:'Oswald',sans-serif;">{pct_done:.1f}% done</div>
+                <div style="margin-top:6px; background:#fbe7dc; border-radius:10px; height:6px;">
+                    <div style="background:#d96c34; border-radius:10px; height:6px; width:{pct_done:.1f}%;"></div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        with t4:
+            remaining_cr = max(DEFAULT_TOTAL_CREDITS - total_credits, 0)
+            st.markdown(f"""
+            <div style="background:rgba(253,250,247,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.8);
+                        border-radius:1rem; padding:16px 20px; text-align:center;">
+                <div style="font-size:0.7rem; color:#8c8f9c; font-family:'Oswald',sans-serif; letter-spacing:1.5px; margin-bottom:6px;">CREDITS REMAINING</div>
+                <div style="font-size:1.1rem; font-weight:800; color:#1a1c29; font-family:'Oswald',sans-serif;">{int(remaining_cr)} / {int(DEFAULT_TOTAL_CREDITS)}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        st.write("")
+
         # Prepare Graph Data
         sem_stats = []
         semesters = included_df.groupby(['academic_level', 'semester'])
@@ -490,10 +561,11 @@ elif current_page == "INPUT RESULTS":
                 if error: st.error(error)
                 else:
                     st.session_state.df = df_final
-                    uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
-                    universal_save(df_final, user_id=uid)
                     st.session_state.nav_index = options.index("HOME")
                     st.session_state.pop("nav_radio_trigger", None)
+                    # Save in background after navigation
+                    uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
+                    universal_save(df_final, user_id=uid)
                     st.rerun()
 # --------- PAGE: LOGIN / SYNC ---------
 elif current_page == "LOGIN / SYNC":
