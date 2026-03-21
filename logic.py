@@ -134,14 +134,20 @@ def universal_save(df, user_id=None):
         return True, "Local Save Successful"
 
 def universal_load(user_id=None):
-    """Loads DataFrame from local storage or Supabase."""
+    """Loads DataFrame from local storage or Supabase.
+    
+    If user_id is provided (logged-in user), ONLY loads from cloud.
+    Never falls back to localStorage for logged-in users to prevent
+    data leakage between users sharing the same browser.
+    If no user_id (guest), loads from localStorage only.
+    """
     import pandas as pd
     import json
     import streamlit as st
     from streamlit_local_storage import LocalStorage
     
     if user_id:
-        # Load from Cloud
+        # Logged-in user: ONLY load from cloud, never fall back to localStorage
         conn = init_supabase()
         if conn:
             try:
@@ -151,8 +157,10 @@ def universal_load(user_id=None):
                     return pd.DataFrame(json_data), "Loaded from Cloud"
             except Exception as e:
                 pass
+        # Cloud failed or no data — return empty, do NOT leak localStorage
+        return None, "No cloud data found"
     
-    # Try Local load fallback
+    # Guest user: load from localStorage only
     localS = LocalStorage()
     local_data = localS.getItem("guest_gpa_data")
     if local_data:

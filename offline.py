@@ -23,12 +23,9 @@ st.set_page_config(
     }
 )
 
-# --- PERSISTENT DATA STORAGE ---
-@st.cache_resource
-def get_shared_state():
-    return {"df": None}
-
-shared_state = get_shared_state()
+# --- PERSISTENT DATA STORAGE (per-user session, NOT shared across users) ---
+if "df" not in st.session_state:
+    st.session_state.df = None
 
 # --- APPLY CUSTOM STYLES ---
 styles.apply_styles()
@@ -89,11 +86,12 @@ with st.sidebar:
         if st.button("Logout", icon=":material/logout:", use_container_width=True):
             st.session_state.authenticated = False
             st.session_state.user_id = None
+            st.session_state.df = None  # Clear data on logout so other users don't see it
             st.rerun()
 
     if st.button("Save Progress", icon=":material/save:", use_container_width=True):
-        if shared_state["df"] is not None:
-            success, msg = universal_save(shared_state["df"], user_id=st.session_state.user_id)
+        if st.session_state.df is not None:
+            success, msg = universal_save(st.session_state.df, user_id=st.session_state.user_id)
             if success:
                 st.success(msg)
             else:
@@ -123,14 +121,15 @@ with st.sidebar:
 # ==========================================
 # DATA PREPARATION
 # ==========================================
-# Try Universal Load once if df is None
-if shared_state["df"] is None:
-    uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
+# Auto-load only for logged-in users (guests start with zero data by design)
+# This runs once per session when df has not been loaded yet
+if st.session_state.df is None and st.session_state.get("authenticated"):
+    uid = st.session_state.get("user_id")
     init_df, load_msg = universal_load(user_id=uid)
     if init_df is not None and not init_df.empty:
-        shared_state["df"] = init_df
+        st.session_state.df = init_df
 
-df = shared_state["df"]
+df = st.session_state.df
 included_df = pd.DataFrame()
 total_credits, final_gpa, performance_pct = 0, 0.0, 0.0
 
@@ -375,7 +374,7 @@ elif current_page == "MASTER DATA":
         )
         
         if not edited_df.equals(df):
-            shared_state["df"] = edited_df
+            st.session_state.df = edited_df
             uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
             universal_save(edited_df, user_id=uid)
             st.rerun()
@@ -480,7 +479,7 @@ elif current_page == "INPUT RESULTS":
                 df_final, error = process_combined_data(combined_parsed_data)
                 if error: st.error(error)
                 else:
-                    shared_state["df"] = df_final
+                    st.session_state.df = df_final
                     uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
                     universal_save(df_final, user_id=uid)
                     st.session_state.nav_index = options.index("HOME")
@@ -508,9 +507,11 @@ elif current_page == "LOGIN / SYNC":
                 if cloud_user:
                     st.session_state.authenticated = True
                     st.session_state.user_id = cloud_user
+                    # Always reset data on login and load fresh from cloud
+                    st.session_state.df = None
                     cloud_df, msg = universal_load(user_id=cloud_user)
                     if cloud_df is not None and not cloud_df.empty:
-                        shared_state["df"] = cloud_df
+                        st.session_state.df = cloud_df
                     st.session_state.nav_index = options.index("HOME")
                     st.rerun()
                 else:
@@ -521,6 +522,7 @@ elif current_page == "LOGIN / SYNC":
             if st.button("Logout", icon=":material/logout:", use_container_width=True):
                 st.session_state.authenticated = False
                 st.session_state.user_id = None
+                st.session_state.df = None  # Clear data on logout
                 st.session_state.nav_index = options.index("HOME")
                 st.rerun()
                 
