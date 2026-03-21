@@ -80,6 +80,7 @@ with st.sidebar:
         st.caption("Status: **Guest Mode** (Local Save)")
         if st.button("Login / Create Account", icon=":material/login:", type="primary", use_container_width=True):
             st.session_state.nav_index = options.index("LOGIN / SYNC")
+            st.session_state["nav_radio_trigger"] = "LOGIN / SYNC"
             st.rerun()
         if st.button("Save Locally (Guest)", icon=":material/save:", use_container_width=True):
             if st.session_state.df is not None:
@@ -492,6 +493,7 @@ elif current_page == "INPUT RESULTS":
                     uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
                     universal_save(df_final, user_id=uid)
                     st.session_state.nav_index = options.index("HOME")
+                    st.session_state["nav_radio_trigger"] = "HOME"
                     st.rerun()
 # --------- PAGE: LOGIN / SYNC ---------
 elif current_page == "LOGIN / SYNC":
@@ -522,6 +524,7 @@ elif current_page == "LOGIN / SYNC":
                     if cloud_df is not None and not cloud_df.empty:
                         st.session_state.df = cloud_df
                     st.session_state.nav_index = options.index("HOME")
+                    st.session_state["nav_radio_trigger"] = "HOME"
                     st.rerun()
                 else:
                     st.error("Please enter a valid Student ID.")
@@ -533,6 +536,7 @@ elif current_page == "LOGIN / SYNC":
                 st.session_state.user_id = None
                 st.session_state.df = None  # Clear data on logout
                 st.session_state.nav_index = options.index("HOME")
+                st.session_state["nav_radio_trigger"] = "HOME"
                 st.rerun()
                 
         st.markdown('</div>', unsafe_allow_html=True)
