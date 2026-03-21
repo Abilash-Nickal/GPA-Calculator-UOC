@@ -398,13 +398,22 @@ elif current_page == "TARGET TRACKER":
             target_class = st.selectbox("SET TARGET CLASS",
                 ["FIRST CLASS (3.70)", "2ND UPPER (3.30)", "2ND LOWER (3.00)"],
                 index=["FIRST CLASS (3.70)", "2ND UPPER (3.30)", "2ND LOWER (3.00)"].index(st.session_state.target_class))
-            st.session_state.target_class = target_class
+            
+            if target_class != st.session_state.target_class:
+                st.session_state.target_class = target_class
+                uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
+                universal_save(st.session_state.df, user_id=uid)
+                st.rerun()
 
             target_map = {"FIRST CLASS (3.70)": 3.70, "2ND UPPER (3.30)": 3.30, "2ND LOWER (3.00)": 3.00}
             target_gpa_val = target_map[target_class]
             
             total_deg_credits = st.number_input("TOTAL DEGREE CREDITS", min_value=1.0, value=st.session_state.total_deg_credits, step=1.0)
-            st.session_state.total_deg_credits = total_deg_credits
+            if total_deg_credits != st.session_state.total_deg_credits:
+                st.session_state.total_deg_credits = total_deg_credits
+                uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
+                universal_save(st.session_state.df, user_id=uid)
+                st.rerun()
             
         with t_col2:
             req_gpa = calculate_target_required_gpa(target_gpa_val, final_gpa, total_credits, total_deg_credits)

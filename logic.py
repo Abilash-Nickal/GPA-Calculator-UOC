@@ -104,15 +104,21 @@ def init_supabase():
         return None
 
 def universal_save(df, user_id=None):
-    """Saves DataFrame locally or to Supabase depending on auth status."""
+    """Saves DataFrame and Target Settings locally or to Supabase."""
     import json
     import streamlit as st
     from streamlit_local_storage import LocalStorage
     
-    if df is None:
-        return False, "No data to save"
+    # Prepare payload: bundle data with target settings
+    data_list = []
+    if df is not None:
+        data_list = json.loads(df.to_json(orient="records"))
         
-    data_json = df.to_json(orient="records")
+    payload = {
+        "data": data_list,
+        "target_class": st.session_state.get("target_class"),
+        "total_deg_credits": st.session_state.get("total_deg_credits")
+    }
     
     if user_id:
         conn = init_supabase()
@@ -120,7 +126,7 @@ def universal_save(df, user_id=None):
             try:
                 # Upsert into Supabase
                 conn.table("gpa_records").upsert(
-                    {"user_id": user_id, "gpa_json": json.loads(data_json)}
+                    {"user_id": user_id, "gpa_json": payload}
                 ).execute()
                 return True, "Cloud Save Successful"
             except Exception as e:
@@ -130,43 +136,61 @@ def universal_save(df, user_id=None):
     else:
         # Local save
         localS = LocalStorage()
-        localS.setItem("guest_gpa_data", data_json)
+        localS.setItem("guest_gpa_data", json.dumps(payload))
         return True, "Local Save Successful"
 
 def universal_load(user_id=None):
-    """Loads DataFrame from local storage or Supabase.
+    """Loads DataFrame and restores Target Settings.
     
-    If user_id is provided (logged-in user), ONLY loads from cloud.
-    Never falls back to localStorage for logged-in users to prevent
-    data leakage between users sharing the same browser.
+    If user_id is provided, ONLY loads from cloud.
     If no user_id (guest), loads from localStorage only.
+    Restores target_class and total_deg_credits to session_state if found.
     """
     import pandas as pd
     import json
     import streamlit as st
     from streamlit_local_storage import LocalStorage
     
+    raw_payload = None
+    msg = "No data found"
+    
     if user_id:
-        # Logged-in user: ONLY load from cloud, never fall back to localStorage
+        # Logged-in user: ONLY load from cloud
         conn = init_supabase()
         if conn:
             try:
                 result = conn.table("gpa_records").select("gpa_json").eq("user_id", user_id).execute()
                 if result.data and len(result.data) > 0:
-                    json_data = result.data[0].get("gpa_json", [])
-                    return pd.DataFrame(json_data), "Loaded from Cloud"
+                    raw_payload = result.data[0].get("gpa_json", [])
+                    msg = "Loaded from Cloud"
             except Exception as e:
                 pass
-        # Cloud failed or no data — return empty, do NOT leak localStorage
-        return None, "No cloud data found"
-    
-    # Guest user: load from localStorage only
-    localS = LocalStorage()
-    local_data = localS.getItem("guest_gpa_data")
-    if local_data:
-        try:
-            return pd.read_json(local_data), "Loaded Locally"
-        except:
-            pass
+        if not raw_payload:
+            return None, "No cloud data found"
+    else:
+        # Guest user: load from localStorage only
+        localS = LocalStorage()
+        local_data = localS.getItem("guest_gpa_data")
+        if local_data:
+            try:
+                raw_payload = json.loads(local_data)
+                msg = "Loaded Locally"
+            except:
+                pass
+
+    if raw_payload is not None:
+        # Check if it's the new dict format or old list format
+        if isinstance(raw_payload, dict):
+            # New format
+            data = raw_payload.get("data", [])
+            # Restore targets to session state directly
+            if "target_class" in raw_payload:
+                st.session_state.target_class = raw_payload["target_class"]
+            if "total_deg_credits" in raw_payload:
+                st.session_state.total_deg_credits = raw_payload["total_deg_credits"]
+            return pd.DataFrame(data), msg
+        else:
+            # Old format (just a list of records)
+            return pd.DataFrame(raw_payload), msg
             
-    return None, "No data found"
+    return None, msg
