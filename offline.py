@@ -51,6 +51,10 @@ st.markdown("""
 options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "LOGIN / SYNC", "HELP & GUIDE", "FEEDBACK"]
 if "nav_index" not in st.session_state:
     st.session_state.nav_index = 0
+if "target_class" not in st.session_state:
+    st.session_state.target_class = "2ND UPPER (3.30)"
+if "total_deg_credits" not in st.session_state:
+    st.session_state.total_deg_credits = 120.0
 
 with st.sidebar:
     st.markdown(f"""
@@ -168,6 +172,14 @@ if current_page == "HOME":
     <p class="dashboard-subtitle">Home > Tracker</p>
     """, unsafe_allow_html=True)
 
+    # --- AUTO-SAVE DEFERRED FROM INPUT PAGE ---
+    if st.session_state.get("pending_save"):
+        uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
+        success, msg = universal_save(st.session_state.df, user_id=uid)
+        if success: st.toast(f"✅ {msg}", icon="📦")
+        else: st.error(msg)
+        st.session_state.pending_save = False
+
     if df is None:
         render_notice("Please navigate to 'INPUT RESULTS' on the left to load your academic data.", icon="help")
         m1, m2, m3, m4 = st.columns(4)
@@ -185,24 +197,19 @@ if current_page == "HOME":
 
         # --- DEGREE TARGET SNAPSHOT ROW ---
         st.write("")
-        DEFAULT_TOTAL_CREDITS = 120.0
-        class_thresholds = [
-            ("FIRST CLASS",  3.70, "#d4a017"),
-            ("2ND UPPER",    3.30, "#a8a8a8"),
-            ("2ND LOWER",    3.00, "#cd7f32"),
-        ]
-        # Find the next reachable class above current standing
-        next_target = None
-        for label, threshold, color in class_thresholds:
-            if final_gpa < threshold:
-                from logic import calculate_target_required_gpa
-                needed = calculate_target_required_gpa(threshold, final_gpa, total_credits, DEFAULT_TOTAL_CREDITS)
-                next_target = (label, threshold, color, needed)
-                break
+        # Read user's target from session state (set in Target Tracker), with sensible defaults
+        target_map = {"FIRST CLASS (3.70)": 3.70, "2ND UPPER (3.30)": 3.30, "2ND LOWER (3.00)": 3.00}
+        target_cls_label = st.session_state.get("target_class", "2ND UPPER (3.30)")
+        target_gpa_threshold = target_map[target_cls_label]
+        target_cls_name = target_cls_label.split(" (")[0]  # e.g. "2ND UPPER"
+        DEFAULT_TOTAL_CREDITS = st.session_state.get("total_deg_credits", 120.0)
+        cls_colors = {"FIRST CLASS": "#d4a017", "2ND UPPER": "#a8a8a8", "2ND LOWER": "#cd7f32", "GENERAL": "#8c8f9c"}
+
+        needed = calculate_target_required_gpa(target_gpa_threshold, final_gpa, total_credits, DEFAULT_TOTAL_CREDITS)
+        target_color = cls_colors.get(target_cls_name, "#8c8f9c")
 
         t1, t2, t3, t4 = st.columns(4)
         with t1:
-            cls_colors = {"FIRST CLASS": "#d4a017", "2ND UPPER": "#a8a8a8", "2ND LOWER": "#cd7f32", "GENERAL": "#8c8f9c", "AWAITING DATA": "#8c8f9c"}
             badge_color = cls_colors.get(standing, "#8c8f9c")
             st.markdown(f"""
             <div style="background:rgba(253,250,247,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.8);
@@ -212,24 +219,30 @@ if current_page == "HOME":
             </div>
             """, unsafe_allow_html=True)
         with t2:
-            if next_target:
-                lbl, thr, col, needed = next_target
-                if needed is not None and 0 <= needed <= 4.0:
-                    st.markdown(f"""
-                    <div style="background:rgba(253,250,247,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.8);
-                                border-radius:1rem; padding:16px 20px; text-align:center;">
-                        <div style="font-size:0.7rem; color:#8c8f9c; font-family:'Oswald',sans-serif; letter-spacing:1.5px; margin-bottom:6px;">TARGET: {lbl}</div>
-                        <div style="font-size:1.1rem; font-weight:800; color:{col}; font-family:'Oswald',sans-serif;">{needed:.2f} avg needed</div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                elif needed is not None and needed > 4.0:
-                    st.markdown(f"""
-                    <div style="background:rgba(253,250,247,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.8);
-                                border-radius:1rem; padding:16px 20px; text-align:center;">
-                        <div style="font-size:0.7rem; color:#8c8f9c; font-family:'Oswald',sans-serif; letter-spacing:1.5px; margin-bottom:6px;">TARGET: {lbl}</div>
-                        <div style="font-size:1.1rem; font-weight:800; color:#e74c3c; font-family:'Oswald',sans-serif;">Not Achievable</div>
-                    </div>
-                    """, unsafe_allow_html=True)
+            if needed is not None and 0 <= needed <= 4.0:
+                st.markdown(f"""
+                <div style="background:rgba(253,250,247,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.8);
+                            border-radius:1rem; padding:16px 20px; text-align:center;">
+                    <div style="font-size:0.7rem; color:#8c8f9c; font-family:'Oswald',sans-serif; letter-spacing:1.5px; margin-bottom:6px;">TARGET: {target_cls_name}</div>
+                    <div style="font-size:1.1rem; font-weight:800; color:{target_color}; font-family:'Oswald',sans-serif;">{needed:.2f} avg needed</div>
+                </div>
+                """, unsafe_allow_html=True)
+            elif needed is not None and needed < 0:
+                st.markdown(f"""
+                <div style="background:rgba(253,250,247,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.8);
+                            border-radius:1rem; padding:16px 20px; text-align:center;">
+                    <div style="font-size:0.7rem; color:#8c8f9c; font-family:'Oswald',sans-serif; letter-spacing:1.5px; margin-bottom:6px;">TARGET: {target_cls_name}</div>
+                    <div style="font-size:1.1rem; font-weight:800; color:#27ae60; font-family:'Oswald',sans-serif;">Already reached! 🎉</div>
+                </div>
+                """, unsafe_allow_html=True)
+            elif needed is not None and needed > 4.0:
+                st.markdown(f"""
+                <div style="background:rgba(253,250,247,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.8);
+                            border-radius:1rem; padding:16px 20px; text-align:center;">
+                    <div style="font-size:0.7rem; color:#8c8f9c; font-family:'Oswald',sans-serif; letter-spacing:1.5px; margin-bottom:6px;">TARGET: {target_cls_name}</div>
+                    <div style="font-size:1.1rem; font-weight:800; color:#e74c3c; font-family:'Oswald',sans-serif;">Not Achievable</div>
+                </div>
+                """, unsafe_allow_html=True)
         with t3:
             remaining = DEFAULT_TOTAL_CREDITS - total_credits
             pct_done = min((total_credits / DEFAULT_TOTAL_CREDITS) * 100, 100)
@@ -381,11 +394,17 @@ elif current_page == "TARGET TRACKER":
         
         with t_col1:
             st.write("Plan your path to your desired degree classification. Enter your target and total credits for the degree.")
-            target_class = st.selectbox("SET TARGET CLASS", ["FIRST CLASS (3.70)", "2ND UPPER (3.30)", "2ND LOWER (3.00)"], index=1)
+            
+            target_class = st.selectbox("SET TARGET CLASS",
+                ["FIRST CLASS (3.70)", "2ND UPPER (3.30)", "2ND LOWER (3.00)"],
+                index=["FIRST CLASS (3.70)", "2ND UPPER (3.30)", "2ND LOWER (3.00)"].index(st.session_state.target_class))
+            st.session_state.target_class = target_class
+
             target_map = {"FIRST CLASS (3.70)": 3.70, "2ND UPPER (3.30)": 3.30, "2ND LOWER (3.00)": 3.00}
             target_gpa_val = target_map[target_class]
             
-            total_deg_credits = st.number_input("TOTAL DEGREE CREDITS", min_value=1.0, value=120.0, step=1.0)
+            total_deg_credits = st.number_input("TOTAL DEGREE CREDITS", min_value=1.0, value=st.session_state.total_deg_credits, step=1.0)
+            st.session_state.total_deg_credits = total_deg_credits
             
         with t_col2:
             req_gpa = calculate_target_required_gpa(target_gpa_val, final_gpa, total_credits, total_deg_credits)
@@ -563,9 +582,8 @@ elif current_page == "INPUT RESULTS":
                     st.session_state.df = df_final
                     st.session_state.nav_index = options.index("HOME")
                     st.session_state.pop("nav_radio_trigger", None)
-                    # Save in background after navigation
-                    uid = st.session_state.get("user_id") if st.session_state.get("authenticated") else None
-                    universal_save(df_final, user_id=uid)
+                    # Defer save to the home page for immediate navigation
+                    st.session_state.pending_save = True
                     st.rerun()
 # --------- PAGE: LOGIN / SYNC ---------
 elif current_page == "LOGIN / SYNC":
