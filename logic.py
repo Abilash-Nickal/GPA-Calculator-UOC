@@ -6,23 +6,31 @@ def parse_pasted_data(raw_text):
     if not raw_text.strip(): return []
     parsed_data = []
     # This pattern matches the specific format of the university portal results
-    squish_pattern = r'([A-Z]{2,3}\s\d{4})\s*(.*?)\s*(\d)\s*(Standard|Repeat)\s*(\d{4})\s*(\d)\s*(Official results released\.|Marks Confirmed\.)\s*([A-Z][+-]?|ab|--)?\s*(\d\.\d{2}|--)?'
+    # Updated to handle leading ID/Level, Medical registry type, 'mc' grade, and optional trailing dot.
+    squish_pattern = r'(?:[\d\s]+)?([A-Z]{2,3}\s\d{4})\s*(.*?)\s*(\d)\s*(Standard|Repeat|Medical)\s*(\d{4})\s*(\d)\s*(Official results released\.?|Marks Confirmed\.?)\s*(mc|ab|[A-Z][+-]?|--)?\s*(\d\.\d{2}|--)?'
     matches = list(re.finditer(squish_pattern, raw_text, re.IGNORECASE))
     if matches:
         for match in matches:
+            # GPV might be missing for some grades or specially marked
+            gpv_val = 0.0
             if match.group(9) and match.group(9) != '--':
                 try:
-                    parsed_data.append({
-                        "course_code": match.group(1).strip(), 
-                        "course_title": match.group(2).strip(),
-                        "credits": int(match.group(3)), 
-                        "registered_type": match.group(4),
-                        "semester": match.group(6), 
-                        "grade": match.group(8) if match.group(8) else "--",
-                        "gpv": float(match.group(9))
-                    })
-                except Exception: 
-                    pass
+                    gpv_val = float(match.group(9))
+                except ValueError:
+                    gpv_val = 0.0
+
+            try:
+                parsed_data.append({
+                    "course_code": match.group(1).strip(), 
+                    "course_title": match.group(2).strip(),
+                    "credits": int(match.group(3)), 
+                    "registered_type": match.group(4),
+                    "semester": match.group(6), 
+                    "grade": match.group(8) if match.group(8) else "--",
+                    "gpv": gpv_val
+                })
+            except Exception: 
+                pass
     return parsed_data
 
 def get_academic_level(course_code):
