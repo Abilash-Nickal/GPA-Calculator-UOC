@@ -69,7 +69,8 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     # NATIVE ZERO-BLINK RADIO NAVIGATION
-    current_page = st.radio("Navigation", options, index=st.session_state.nav_index, key="nav_radio_trigger", label_visibility="collapsed")
+    # Remove key to allow programmatic index updates without API Exceptions
+    current_page = st.radio("Navigation", options, index=st.session_state.nav_index, label_visibility="collapsed")
     
     # Sync index back for buttons
     st.session_state.nav_index = options.index(current_page)
@@ -228,7 +229,6 @@ if current_page == "HOME":
         st.write("###") # Vertical spacer
         if st.button("+ INPUT NEW RESULTS", type="primary", use_container_width=True, icon=":material/add_circle:"):
             st.session_state.nav_index = options.index("INPUT RESULTS")
-            st.session_state.nav_radio_trigger = "INPUT RESULTS"
             st.rerun()
 
     # --- AUTO-SAVE DEFERRED FROM INPUT PAGE ---
@@ -649,7 +649,6 @@ elif current_page == "INPUT RESULTS":
                 else:
                     st.session_state.df = df_final
                     st.session_state.nav_index = options.index("HOME")
-                    st.session_state.nav_radio_trigger = "HOME"
                     # Defer save to the home page for immediate navigation
                     st.session_state.pending_save = True
                     st.rerun()
