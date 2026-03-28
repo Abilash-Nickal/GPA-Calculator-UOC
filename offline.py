@@ -58,6 +58,14 @@ if "target_class" not in st.session_state:
 if "total_deg_credits" not in st.session_state:
     st.session_state.total_deg_credits = 120.0
 
+# --- FORCE NAVIGATION MANAGER ---
+# This ensures programmatic navigation works on the first click/rerun
+if "pending_nav" in st.session_state:
+    target_page = st.session_state.pending_nav
+    if target_page in options:
+        st.session_state.nav_index = options.index(target_page)
+    del st.session_state.pending_nav
+
 with st.sidebar:
     st.markdown(f"""
     <div style="display:flex; flex-direction:column; align-items:center; margin-bottom: 10px; margin-top: 0px;">
@@ -224,7 +232,7 @@ if current_page == "HOME":
     with col_h2:
         st.write("###") # Vertical spacer
         if st.button("+ INPUT NEW RESULTS", type="primary", use_container_width=True, icon=":material/add_circle:"):
-            st.session_state.nav_index = options.index("INPUT RESULTS")
+            st.session_state.pending_nav = "INPUT RESULTS"
             st.rerun()
 
     # --- AUTO-SAVE DEFERRED FROM INPUT PAGE ---
@@ -644,7 +652,7 @@ elif current_page == "INPUT RESULTS":
                 if error: st.error(error)
                 else:
                     st.session_state.df = df_final
-                    st.session_state.nav_index = options.index("HOME")
+                    st.session_state.pending_nav = "HOME"
                     # Defer save to the home page for immediate navigation
                     st.session_state.pending_save = True
                     st.rerun()
