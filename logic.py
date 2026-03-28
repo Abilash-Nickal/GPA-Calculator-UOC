@@ -4,11 +4,25 @@ import pandas as pd
 def parse_pasted_data(raw_text):
     """Parses raw text from the university portal using regex."""
     if not raw_text.strip(): return []
+    # Pre-filter to remove headers/footers as requested by the user
+    lines = raw_text.split('\n')
+    filtered_lines = []
+    for line in lines:
+        l = line.strip().upper()
+        if not l: continue
+        # Ignore Table Headers, Level Headers, and Course Count Footers
+        if 'COURSE UNIT' in l and 'COURSE TITLE' in l: continue
+        if l.startswith('LEVEL') and len(l.split()) <= 2: continue
+        if 'NO. OF COURSES' in l: continue
+        filtered_lines.append(line)
+    
+    clean_text = '\n'.join(filtered_lines)
     parsed_data = []
+
     # This pattern matches the specific format of the university portal results
     # Updated to handle leading ID/Level, Medical registry type, 'mc' grade, and optional trailing dot.
     squish_pattern = r'(?:[\d\s]+)?([A-Z]{2,3}\s\d{4})\s*(.*?)\s*(\d)\s*(Standard|Repeat|Medical)\s*(\d{4})\s*(\d)\s*(Official results released\.?|Marks Confirmed\.?)\s*(mc|ab|[A-Z][+-]?|--)?\s*(\d\.\d{2}|--)?'
-    matches = list(re.finditer(squish_pattern, raw_text, re.IGNORECASE))
+    matches = list(re.finditer(squish_pattern, clean_text, re.IGNORECASE))
     if matches:
         for match in matches:
             # GPV might be missing for some grades or specially marked
@@ -58,7 +72,11 @@ def process_combined_data(all_data):
         
         # Capping only applies to 'Repeat' registration types
         is_repeat_type = str(best_row.get('registered_type', '')).lower() == 'repeat'
-        best_row['Include'] = True 
+        
+        # Determine if the course should be included in GPA calculations
+        # According to user request: ignore if the grade is empty (--)
+        grade_val = str(best_row.get('grade', '--')).strip()
+        best_row['Include'] = True if grade_val != "--" else False
         
         if is_repeat_type:
             # According to university rules, repeat passes are capped at C (2.0)
