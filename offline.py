@@ -218,15 +218,18 @@ if current_page == "HOME":
             {standing}
         </div>
     </div>
-    <h1 class="dashboard-title">HOME</h1>
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <p class="dashboard-subtitle" style="margin:0;">Home > Tracker</p>
-        <button onclick="window.parent.document.querySelector('input[value=\"INPUT RESULTS\"]').click();" 
-                style="background:#d96c34; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-family:'Oswald',sans-serif; font-size:0.8rem; letter-spacing:1px; box-shadow:0 4px 15px rgba(217, 108, 52, 0.2);">
-            + INPUT NEW RESULTS
-        </button>
-    </div>
     """, unsafe_allow_html=True)
+
+    col_h1, col_h2 = st.columns([2, 1])
+    with col_h1:
+        st.markdown('<h1 class="dashboard-title" style="margin-bottom:0px !important;">HOME</h1>', unsafe_allow_html=True)
+        st.markdown('<p class="dashboard-subtitle">Home > Tracker</p>', unsafe_allow_html=True)
+    with col_h2:
+        st.write("###") # Vertical spacer
+        if st.button("+ INPUT NEW RESULTS", type="primary", use_container_width=True, icon=":material/add_circle:"):
+            st.session_state.nav_index = options.index("INPUT RESULTS")
+            st.session_state.nav_radio_trigger = "INPUT RESULTS"
+            st.rerun()
 
     # --- AUTO-SAVE DEFERRED FROM INPUT PAGE ---
     if st.session_state.get("pending_save"):
@@ -646,7 +649,7 @@ elif current_page == "INPUT RESULTS":
                 else:
                     st.session_state.df = df_final
                     st.session_state.nav_index = options.index("HOME")
-                    st.session_state.pop("nav_radio_trigger", None)
+                    st.session_state.nav_radio_trigger = "HOME"
                     # Defer save to the home page for immediate navigation
                     st.session_state.pending_save = True
                     st.rerun()
