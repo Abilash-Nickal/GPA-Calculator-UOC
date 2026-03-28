@@ -176,9 +176,6 @@ if st.session_state.show_login and not st.session_state.authenticated:
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.markdown('<div class="ui-card">', unsafe_allow_html=True)
-        st.markdown('<div class="ui-card-header" style="top:-15px;">AUTHENTICATION</div>', unsafe_allow_html=True)
-        
         st.info("Guest Mode Active. Your data is currently saving to the local browser. Login to sync with the cloud.")
         cloud_user = st.text_input("Enter Student ID to Login")
         
@@ -202,7 +199,6 @@ if st.session_state.show_login and not st.session_state.authenticated:
                 st.session_state.show_login = False
                 st.rerun()
                 
-        st.markdown('</div>', unsafe_allow_html=True)
     st.stop() # Prevents rendering of any other page content while login is active
 
 # Ensure show_login is False if already authenticated
