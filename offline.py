@@ -48,7 +48,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 # --- Navigation Setup ---
-options = ["HOME", "MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "HELP & GUIDE", "FEEDBACK"]
+options = ["HOME", "EDIT MASTER DATA", "SEMESTER OVERVIEW", "INPUT RESULTS", "TARGET TRACKER", "HELP & GUIDE", "FEEDBACK"]
 if "nav_index" not in st.session_state:
     st.session_state.nav_index = 0
 if "show_login" not in st.session_state:
@@ -219,7 +219,13 @@ if current_page == "HOME":
         </div>
     </div>
     <h1 class="dashboard-title">HOME</h1>
-    <p class="dashboard-subtitle">Home > Tracker</p>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <p class="dashboard-subtitle" style="margin:0;">Home > Tracker</p>
+        <button onclick="window.parent.document.querySelector('input[value=\"INPUT RESULTS\"]').click();" 
+                style="background:#d96c34; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-family:'Oswald',sans-serif; font-size:0.8rem; letter-spacing:1px; box-shadow:0 4px 15px rgba(217, 108, 52, 0.2);">
+            + INPUT NEW RESULTS
+        </button>
+    </div>
     """, unsafe_allow_html=True)
 
     # --- AUTO-SAVE DEFERRED FROM INPUT PAGE ---
@@ -231,7 +237,7 @@ if current_page == "HOME":
         st.session_state.pending_save = False
 
     if df is None:
-        render_notice("Please navigate to 'INPUT RESULTS' on the left to load your academic data.", icon="help")
+        render_notice("Please navigate to 'INPUT RESULTS' on the left or use the button above to load your academic data.", icon="help")
         m1, m2, m3, m4 = st.columns(4)
         with m1: render_custom_metric("FINAL CGPA", "0.00", "+0.00 SINCE LAST SEMESTER", ICON_CGPA, "#2B2D38")
         with m2: render_custom_metric("TOTAL CREDITS", "0", "AWAITING DATA", ICON_CREDITS, "#87DE96")
@@ -485,13 +491,13 @@ elif current_page == "TARGET TRACKER":
                 st.caption(f"Based on {total_deg_credits - total_credits:.0f} remaining credits.")
 
 
-# --------- PAGE: MASTER DATA ---------
-elif current_page == "MASTER DATA":
+# --------- PAGE: EDIT MASTER DATA ---------
+elif current_page == "EDIT MASTER DATA":
     st.markdown("""
     <div class="top-header">
         <div class="logo-text">ACADEMIC TRACKER</div>
     </div>
-    <h1 class="dashboard-title">MASTER DATA</h1>
+    <h1 class="dashboard-title">EDIT MASTER DATA</h1>
     <p class="dashboard-subtitle">Home > Master Data</p>
     """, unsafe_allow_html=True)
 
@@ -611,31 +617,31 @@ elif current_page == "INPUT RESULTS":
     <p class="dashboard-subtitle">Home > Data Entry</p>
     """, unsafe_allow_html=True)
 
-    st.markdown("### Paste results from your university web portal:")
-    col1, col2 = st.columns(2)
-    with col1:
-        l1_text = st.text_area("Level 1 Results", height=150)
-        l3_text = st.text_area("Level 3 Results (Optional)", height=150)
-    with col2:
-        l2_text = st.text_area("Level 2 Results (Optional)", height=150)
-        l4_text = st.text_area("Level 4 Results (Optional)", height=150)
+    st.markdown("### Paste all your results from the university web portal:")
+    raw_paste = st.text_area("Paste results here (you can paste multiple levels or semesters at once)", height=300, placeholder="Example:\nIA 1201  Pre-Calculus... \nIA 1202  Electricity...")
 
     st.write("---")
     
     if st.button("🚀 PROCESS DATA & VIEW DASHBOARD", type="primary", use_container_width=True):
-        inputs = {"Level 1": l1_text, "Level 2": l2_text, "Level 3": l3_text, "Level 4": l4_text}
-        valid_inputs = {level: text for level, text in inputs.items() if text.strip()}
-        
-        if not valid_inputs:
-            st.error("Paste your data into at least one of the boxes first!")
+        if not raw_paste.strip():
+            st.error("Paste your data into the box first!")
         else:
-            combined_parsed_data = []
-            for level, text in valid_inputs.items():
-                parsed_data = parse_pasted_data(text)
-                if parsed_data: combined_parsed_data.extend(parsed_data)
-                    
-            if combined_parsed_data:
-                df_final, error = process_combined_data(combined_parsed_data)
+            new_parsed_data = parse_pasted_data(raw_paste)
+            
+            if not new_parsed_data:
+                st.error("No valid course data found in the pasted text. Please check the format.")
+            else:
+                # CONTINUOUS ADDING LOGIC: Combine new results with existing ones
+                total_data = []
+                if st.session_state.df is not None:
+                    # Convert existing DataFrame back to raw record format for re-processing
+                    # We drop calculated columns that process_combined_data will recreate
+                    existing_raw = st.session_state.df.to_dict('records')
+                    total_data.extend(existing_raw)
+                
+                total_data.extend(new_parsed_data)
+                
+                df_final, error = process_combined_data(total_data)
                 if error: st.error(error)
                 else:
                     st.session_state.df = df_final
