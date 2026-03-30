@@ -4,6 +4,7 @@ import plotly.express as px
 import styles
 from styles import ICON_CGPA, ICON_CREDITS, ICON_SUBJECTS, ICON_PERFORMANCE, ICON_EDIT, ICON_CALENDAR, ICON_TARGET, ICON_HELP, render_custom_metric, render_notice
 from logic import parse_pasted_data, process_combined_data, get_classification, calculate_target_required_gpa, universal_save, universal_load
+from ads import render_sidebar_ad, render_footer_ad, render_featured_sponsor_section
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -140,6 +141,9 @@ with st.sidebar:
         </a>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Monetization: Sidebar Ad/Sponsor
+    render_sidebar_ad()
 
 
 # ==========================================
@@ -768,6 +772,10 @@ elif current_page == "HELP & GUIDE":
 
     st.write("---")
     st.caption("UOC Academic Tracker • v2.0 • Created by Abilash")
+    
+    # Monetization: Featured Sponsor in Help
+    st.write("### Support the Developer")
+    render_featured_sponsor_section()
 
 # --------- PAGE: FEEDBACK ---------
 if current_page == "FEEDBACK":
@@ -833,3 +841,6 @@ if current_page == "FEEDBACK":
                 st.error("Please enter a message before submitting.")
 
     st.caption("UOC Academic Tracker • v2.0 • Created by Abilash")
+
+# Global Footer Ad Slot
+render_footer_ad()

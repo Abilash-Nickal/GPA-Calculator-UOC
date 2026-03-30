@@ -365,6 +365,40 @@ CSS_STYLES = """
         div[data-testid="stElementContainer"]:has(.academic-btn-target) + div[data-testid="stElementContainer"] button p {
             color: #ffffff !important;
         }
+        }
+
+        /* --- MONETIZATION & ADS --- */
+        .sidebar-sponsor-card {
+            background-color: rgba(253, 250, 247, 0.9);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 1.25rem;
+            padding: 15px;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        .bmac-button {
+            background-color: #fbe7dc !important;
+            color: #d96c34 !important;
+            padding: 8px 12px !important;
+            border-radius: 10px !important;
+            font-size: 0.8rem !important;
+            font-weight: 700 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 1px solid white !important;
+            transition: all 0.3s ease !important;
+            width: 100% !important;
+            text-decoration: none !important;
+        }
+        .bmac-button:hover {
+            background-color: #d96c34 !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(235,128,68,0.15) !important;
+        }
     }
 </style>
 """
