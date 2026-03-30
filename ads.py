@@ -90,7 +90,8 @@ def render_sponsor_card_mini():
 
 def render_featured_sponsor_section():
     """A larger section for the Help/Feedback page."""
-    st.markdown("""
+    bmac_user = get_ads_config().get("bmac_user", "abilashan")
+    st.markdown(f"""
     <div class="ui-card" style="background: linear-gradient(135deg, rgba(217, 108, 52, 0.05) 0%, rgba(217, 108, 52, 0.1) 100%); border: 1px dashed #d96c34;">
         <div class="ui-card-header">SUPPORT THE DEVELOPER</div>
         <div style="padding: 10px;">
@@ -101,7 +102,7 @@ def render_featured_sponsor_section():
                 consider a small contribution to keep it running!
             </p>
             <div style="display:flex; gap:15px; margin-top:20px;">
-                <a href="https://www.buymeacoffee.com/abilash" target="_blank" style="text-decoration:none;">
+                <a href="https://www.buymeacoffee.com/{bmac_user}" target="_blank" style="text-decoration:none;">
                     <div style="background:#FFDD00; color:#000000; padding:10px 20px; border-radius:10px; font-weight:700; display:flex; align-items:center; gap:10px; font-size:0.9rem;">
                         <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" width="20">
                         Buy Me A Coffee
