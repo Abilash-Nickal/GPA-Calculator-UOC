@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UOC FOT GPA Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f9/Logo_of_the_University_of_Colombo.png/250px-Logo_of_the_University_of_Colombo.png" class="uni-logo" alt="UOC Logo">
+                <h1>Academic Tracker</h1>
+            </div>
+            
+            <div class="nav-menu" id="navMenu">
+                <div class="nav-item active" data-page="home">HOME</div>
+                <div class="nav-item" data-page="edit-data">EDIT MASTER DATA</div>
+                <div class="nav-item" data-page="semester-overview">SEMESTER OVERVIEW</div>
+                <div class="nav-item" data-page="input-results">INPUT RESULTS</div>
+                <div class="nav-item" data-page="target-tracker">TARGET TRACKER</div>
+                <div class="nav-item" data-page="help-guide">HELP & GUIDE</div>
+            </div>
+
+            <div class="auth-box">
+                <hr style="border:0; border-top: 1px solid rgba(235, 128, 68, 0.2); margin-bottom: 15px;">
+                <div id="authStatus" class="status-text" style="color: #8c8f9c; margin-bottom: 15px;">Status: <strong>Guest Mode</strong> (Local Save)</div>
+                <button class="btn-primary" style="margin-bottom: 15px;" id="btnLogin">
+                    <svg viewBox="0 0 24 24"><path d="M10 17v-3H3v-4h7V7l5 5-5 5zm9-14H11v2h8v14h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+                    LOGIN / SYNC
+                </button>
+                <button class="btn-secondary" id="btnSave">
+                    <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                    SAVE PROGRESS
+                </button>
+            </div>
+
+            <div class="social-footer">
+                <a href="https://github.com/Abilash-Nickal" target="_blank" title="GitHub">
+                    <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Page: Home -->
+            <div id="page-home" class="page active">
+                <div class="top-header">
+                    <div class="logo-text">ACADEMIC TRACKER</div>
+                    <div class="standing-badge" id="standingBadge">AWAITING DATA</div>
+                </div>
+                <div class="grid-1-3">
+                    <div>
+                        <h1 class="dashboard-title">HOME</h1>
+                        <p class="dashboard-subtitle">Home > Tracker</p>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; align-items: center;">
+                        <button class="btn-primary" style="width: auto;" onclick="navigateTo('input-results')">+ INPUT NEW RESULTS</button>
+                    </div>
+                </div>
+
+                <div id="homeEmptyState" class="ui-notice">
+                    <div>Please navigate to 'INPUT RESULTS' on the left or use the button above to load your academic data.</div>
+                </div>
+
+                <div class="grid-4" id="homeMetrics" style="display: none;">
+                    <div class="ui-card">
+                        <div class="ui-card-header">FINAL CGPA</div>
+                        <div class="ui-card-body">
+                            <div class="ui-card-value" id="valCGPA">0.00</div>
+                        </div>
+                    </div>
+                    <div class="ui-card">
+                        <div class="ui-card-header">TOTAL CREDITS</div>
+                        <div class="ui-card-body">
+                            <div class="ui-card-value" id="valCredits">0</div>
+                        </div>
+                    </div>
+                    <div class="ui-card">
+                        <div class="ui-card-header">SUBJECTS PASSED</div>
+                        <div class="ui-card-body">
+                            <div class="ui-card-value" id="valSubjects">0</div>
+                        </div>
+                    </div>
+                    <div class="ui-card">
+                        <div class="ui-card-header">PERFORMANCE</div>
+                        <div class="ui-card-body">
+                            <div class="ui-card-value" id="valPerformance">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid-4" id="homeTargets" style="display: none; margin-top: 20px;">
+                    <div class="target-snapshot">
+                        <div class="target-snapshot-title">CURRENT STANDING</div>
+                        <div class="target-snapshot-value" id="snapStanding">-</div>
+                    </div>
+                    <div class="target-snapshot">
+                        <div class="target-snapshot-title" id="snapTargetTitle">TARGET</div>
+                        <div class="target-snapshot-value" id="snapTargetValue">-</div>
+                    </div>
+                    <div class="target-snapshot">
+                        <div class="target-snapshot-title">DEGREE PROGRESS</div>
+                        <div class="target-snapshot-value" id="snapProgress">-</div>
+                    </div>
+                    <div class="target-snapshot">
+                        <div class="target-snapshot-title">CREDITS REMAINING</div>
+                        <div class="target-snapshot-value" id="snapRemaining">-</div>
+                    </div>
+                </div>
+
+                <div class="grid-1-3" style="margin-top: 30px;">
+                    <div class="ui-card" id="pieChartContainer" style="display:none;">
+                        <div class="ui-card-header">GRADE DISTRIBUTION</div>
+                        <div id="pieChart" style="height: 250px;"></div>
+                    </div>
+                    <div class="ui-card" id="lineChartContainer" style="display:none;">
+                        <div class="ui-card-header">PERCENTAGE (SGPA TREND)</div>
+                        <div id="lineChart" style="height: 250px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page: Edit Master Data -->
+            <div id="page-edit-data" class="page">
+                <div class="top-header">
+                    <div class="logo-text">ACADEMIC TRACKER</div>
+                </div>
+                <h1 class="dashboard-title">EDIT MASTER DATA</h1>
+                <p class="dashboard-subtitle">Home > Master Data</p>
+                
+                <div id="editEmptyState" class="ui-notice">
+                    <div>No data to edit. Please navigate to 'INPUT RESULTS' first.</div>
+                </div>
+
+                <div id="dataTableContainer" style="display: none;">
+                    <button class="btn-primary" style="margin-bottom: 10px; width: auto;" onclick="saveTableChanges()">Save Changes</button>
+                    <table id="masterDataTable">
+                        <thead>
+                            <tr>
+                                <th>Include</th>
+                                <th>Lvl</th>
+                                <th>Sem</th>
+                                <th>Code</th>
+                                <th>Title</th>
+                                <th>Crd</th>
+                                <th>GPV</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Page: Semester Overview -->
+            <div id="page-semester-overview" class="page">
+                <div class="top-header">
+                    <div class="logo-text">ACADEMIC TRACKER</div>
+                </div>
+                <h1 class="dashboard-title">SEMESTER OVERVIEW</h1>
+                <p class="dashboard-subtitle">Home > Overview</p>
+                <div id="semOverviewContent"></div>
+            </div>
+
+            <!-- Page: Input Results -->
+            <div id="page-input-results" class="page">
+                <div class="top-header">
+                    <div class="logo-text">ACADEMIC TRACKER</div>
+                </div>
+                <h1 class="dashboard-title">INPUT RESULTS</h1>
+                <p class="dashboard-subtitle">Home > Data Entry</p>
+                
+                <h3>Paste all your results from the university web portal:</h3>
+                <textarea id="rawResultsInput" placeholder="Example:&#10;IA 1201 Pre-Calculus...&#10;IA 1202 Electricity..."></textarea>
+                
+                <button class="btn-primary" id="btnProcessResults">🚀 PROCESS DATA & VIEW DASHBOARD</button>
+            </div>
+
+            <!-- Page: Target Tracker -->
+            <div id="page-target-tracker" class="page">
+                <div class="top-header">
+                    <div class="logo-text">ACADEMIC TRACKER</div>
+                </div>
+                <h1 class="dashboard-title">TARGET TRACKER</h1>
+                <p class="dashboard-subtitle">Home > Target Tracker</p>
+                
+                <div class="grid-2-1">
+                    <div>
+                        <p>Plan your path to your desired degree classification. Enter your target and total credits for the degree.</p>
+                        <label>SET TARGET CLASS</label>
+                        <select id="targetClassSelect">
+                            <option value="FIRST CLASS (3.70)">FIRST CLASS (3.70)</option>
+                            <option value="2ND UPPER (3.30)">2ND UPPER (3.30)</option>
+                            <option value="2ND LOWER (3.00)">2ND LOWER (3.00)</option>
+                        </select>
+                        
+                        <label>TOTAL DEGREE CREDITS</label>
+                        <input type="number" id="totalDegCreditsInput" value="120" step="1">
+                        
+                        <button class="btn-secondary" onclick="calculateTarget()">Update Target Tracker</button>
+                    </div>
+                    <div>
+                        <div class="target-card">
+                            <div class="target-label">Min Grade Required</div>
+                            <div class="target-value" id="targetRequiredValue">-</div>
+                            <div class="target-label">Avg GPA per Subject</div>
+                        </div>
+                        <p style="text-align:center; font-size: 0.8rem;" id="targetRemainingText"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page: Help Guide -->
+            <div id="page-help-guide" class="page">
+                <div class="top-header">
+                    <div class="logo-text">ACADEMIC TRACKER</div>
+                </div>
+                <h1 class="dashboard-title">HELP & GUIDE</h1>
+                <p class="dashboard-subtitle">Home > Help & Guide</p>
+                <p>Welcome to the web app version of the Academic Tracker.</p>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100; align-items:center; justify-content:center;">
+        <div style="background:white; padding:30px; border-radius:15px; width:400px; max-width:90%;">
+            <h2 style="margin-top:0;">Login / Sync</h2>
+            <p>Enter your Student ID to sync your data to the cloud.</p>
+            <input type="text" id="loginUserId" placeholder="Student ID (e.g. 2021/T/000)" style="width:100%;">
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="btn-primary" id="btnConfirmLogin">Login</button>
+                <button class="btn-secondary" onclick="document.getElementById('loginModal').style.display='none'">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
