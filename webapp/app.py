@@ -13,6 +13,11 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+@app.route('/ads.txt')
+def ads_txt():
+    # Google AdSense domain verification
+    return "google.com, pub-8473886914754765, DIRECT, f08c47fec0942fa0", 200, {'Content-Type': 'text/plain'}
+
 @app.route('/api/process_data', methods=['POST'])
 def process_data():
     try:
