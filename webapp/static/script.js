@@ -457,6 +457,52 @@ document.getElementById('btnConfirmLogin').addEventListener('click', async () =>
     }
 });
 
+// Feedback Form Handler
+document.getElementById('feedbackForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btnSubmitFeedback');
+    const originalText = btn.innerText;
+    btn.innerText = "SENDING...";
+    btn.disabled = true;
+
+    const fName = document.getElementById('feedbackName').value || "Anonymous";
+    const fType = document.getElementById('feedbackType').value;
+    const fMsg = document.getElementById('feedbackMsg').value;
+
+    try {
+        const response = await fetch("https://formsubmit.co/ajax/abilash0asp@gmail.com", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                name: fName,
+                type: fType,
+                message: fMsg,
+                _subject: `New Academic Tracker Feedback: ${fType}`,
+                _captcha: "false"
+            })
+        });
+
+        const data = await response.json();
+        
+        if (response.ok && String(data.success).toLowerCase() === "true") {
+            alert("Thank you! Your feedback has been sent directly to the developer.");
+            document.getElementById('feedbackForm').reset();
+        } else if (data.message && (data.message.includes("Activation") || data.message.includes("actived"))) {
+            alert("⚠️ One-Time Activation Required! FormSubmit has sent an email to your address. Please click 'Activate Form' in that email.");
+        } else {
+            alert("Error sending feedback: " + (data.message || "Unknown error"));
+        }
+    } catch (error) {
+        alert("Network error. Please try again later.");
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
+});
+
 // Init
 window.onload = () => {
     loadLocal();

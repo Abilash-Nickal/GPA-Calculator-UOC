@@ -107,25 +107,33 @@
                         <div class="ui-card-header">FINAL CGPA</div>
                         <div class="ui-card-body">
                             <div class="ui-card-value" id="valCGPA">0.00</div>
+                            <div class="ui-icon-block"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z M7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z" fill="currentColor"/></svg></div>
                         </div>
+                        <div class="ui-card-subtext">+ ACTIVE SEMESTER</div>
                     </div>
                     <div class="ui-card">
                         <div class="ui-card-header">TOTAL CREDITS</div>
                         <div class="ui-card-body">
                             <div class="ui-card-value" id="valCredits">0</div>
+                            <div class="ui-icon-block"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M7 2v11h3v9l7-12h-4l4-8z" fill="currentColor"/></svg></div>
                         </div>
+                        <div class="ui-card-subtext">+ ACTIVE SEMESTER</div>
                     </div>
                     <div class="ui-card">
                         <div class="ui-card-header">SUBJECTS PASSED</div>
                         <div class="ui-card-body">
                             <div class="ui-card-value" id="valSubjects">0</div>
+                            <div class="ui-icon-block"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 9h4v11H4zM16 13h4v7h-4zM10 4h4v16h-4z" fill="currentColor"/></svg></div>
                         </div>
+                        <div class="ui-card-subtext">+ ACTIVE SEMESTER</div>
                     </div>
                     <div class="ui-card">
                         <div class="ui-card-header">PERFORMANCE</div>
                         <div class="ui-card-body">
                             <div class="ui-card-value" id="valPerformance">0%</div>
+                            <div class="ui-icon-block"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" fill="currentColor"/></svg></div>
                         </div>
+                        <div class="ui-card-subtext">+ ACTIVE SEMESTER</div>
                     </div>
                 </div>
                 
@@ -373,6 +381,40 @@
                     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
                 </div>
                 -->
+            </div>
+
+            <!-- Page: Feedback -->
+            <div id="page-feedback" class="page">
+                <div class="top-header">
+                    <div class="logo-text">ACADEMIC TRACKER</div>
+                </div>
+                <h1 class="dashboard-title">SHARE FEEDBACK</h1>
+                <p class="dashboard-subtitle">Home > Feedback</p>
+                
+                <div class="ui-card">
+                    <div class="ui-card-header" style="position:static; display:inline-block; margin-bottom:10px;">WE VALUE YOUR INPUT</div>
+                    <p style="color:#d96c34; font-weight:600; font-size:0.9rem; margin-bottom:20px; margin-top:0;">
+                        Help us improve the Academic Tracker by sharing your thoughts or reporting issues.
+                    </p>
+                </div>
+
+                <form id="feedbackForm" style="margin-top: 20px;">
+                    <label style="display:block; margin-bottom:5px; font-weight:600; color:#1a1c29;">Your Name (Optional)</label>
+                    <input type="text" id="feedbackName" placeholder="John Doe">
+                    
+                    <label style="display:block; margin-bottom:5px; font-weight:600; color:#1a1c29;">Feedback Type</label>
+                    <select id="feedbackType">
+                        <option>Feature Request</option>
+                        <option>Bug Report</option>
+                        <option>UI/UX Improvement</option>
+                        <option>General Praise</option>
+                    </select>
+
+                    <label style="display:block; margin-bottom:5px; font-weight:600; color:#1a1c29;">Your Message</label>
+                    <textarea id="feedbackMsg" placeholder="Type your feedback here..." required></textarea>
+
+                    <button type="submit" class="btn-primary" id="btnSubmitFeedback" style="width: auto;">SEND FEEDBACK</button>
+                </form>
             </div>
 
         </main>
