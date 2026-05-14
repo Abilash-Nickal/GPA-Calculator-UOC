@@ -85,6 +85,8 @@ async function updateHomeDashboard() {
     document.getElementById('homeTargets').style.display = 'grid';
     document.getElementById('pieChartContainer').style.display = 'block';
     document.getElementById('lineChartContainer').style.display = 'block';
+    document.getElementById('gradeBarContainer').style.display = 'block';
+    document.getElementById('semBarContainer').style.display = 'block';
 
     const metrics = await recalculateMetrics();
     if(metrics) {
@@ -176,6 +178,55 @@ function buildCharts() {
         margin: {t:25, b:20, l:30, r:20}, 
         yaxis: {range: [0, 4.3]},
         xaxis: {showgrid: false}
+    }, {displayModeBar: false});
+
+    // Grade Bar Chart
+    let gradeOrder = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "E", "F"];
+    let gradeCounts = {};
+    gradeOrder.forEach(g => gradeCounts[g] = 0);
+    included.forEach(d => {
+        if(gradeCounts[d.grade] !== undefined) gradeCounts[d.grade]++;
+    });
+    
+    let gXVals = [], gYVals = [];
+    let started = false;
+    gradeOrder.forEach(g => {
+        if(gradeCounts[g] > 0) started = true;
+        if(started) {
+            gXVals.push(g);
+            gYVals.push(gradeCounts[g]);
+        }
+    });
+
+    let gradeBarData = [{
+        x: gXVals,
+        y: gYVals,
+        type: 'bar',
+        marker: {color: '#d96c34'},
+        text: gYVals.map(String),
+        textposition: 'auto'
+    }];
+    Plotly.newPlot('gradeBarChart', gradeBarData, {
+        margin: {t:20, b:30, l:40, r:20},
+        xaxis: {showgrid: false},
+        yaxis: {title: 'Count', showgrid: true, gridcolor: 'rgba(235,128,68,0.1)'}
+    }, {displayModeBar: false});
+
+    // Sem Bar Chart
+    let sXVals = Object.keys(semMap).sort();
+    let sCreds = sXVals.map(k => semMap[k].cred);
+    let sSubjs = sXVals.map(k => included.filter(d => `L${d.academic_level} - S${d.semester}` === k).length);
+
+    let semBarData = [
+        {x: sXVals, y: sCreds, type: 'bar', name: 'Credits', marker: {color: '#1a1c29'}, text: sCreds.map(String), textposition: 'auto'},
+        {x: sXVals, y: sSubjs, type: 'bar', name: 'Subjects', marker: {color: '#d96c34'}, text: sSubjs.map(String), textposition: 'auto'}
+    ];
+    Plotly.newPlot('semBarChart', semBarData, {
+        barmode: 'group',
+        margin: {t:20, b:30, l:40, r:20},
+        legend: {orientation: 'h', y: 1.1, x: 1, xanchor: 'right', yanchor: 'bottom'},
+        xaxis: {showgrid: false},
+        yaxis: {title: 'Count', showgrid: true, gridcolor: 'rgba(235,128,68,0.1)'}
     }, {displayModeBar: false});
 }
 
