@@ -207,25 +207,30 @@
                 <h1 class="dashboard-title">EDIT MASTER DATA</h1>
                 <p class="dashboard-subtitle">Home > Master Data</p>
                 
-                <div id="editEmptyState" class="ui-notice">
-                    <div>No data to edit. Please navigate to 'INPUT RESULTS' first.</div>
+                <div id="editEmptyState" class="ui-notice" style="display: none;">
+                    <div>No data. You can manually add courses below or import results.</div>
                 </div>
 
                 <div id="dataTableContainer" style="display: none;">
-                    <button class="btn-primary" style="margin-bottom: 10px; width: auto;" onclick="saveTableChanges()">Save Changes</button>
-                    <table id="masterDataTable">
-                        <thead>
-                            <tr>
-                                <th>Include</th>
-                                <th>Lvl</th>
-                                <th>Sem</th>
-                                <th>Code</th>
-                                <th>Title</th>
-                                <th>Crd</th>
-                                <th>GPV</th>
-                                <th>Grade</th>
-                            </tr>
-                        </thead>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <button class="btn-primary" style="width: auto;" onclick="saveTableChanges()">Save Changes</button>
+                        <button class="btn-secondary" style="width: auto;" onclick="addNewCourse()">+ Add Course</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table id="masterDataTable">
+                            <thead>
+                                <tr>
+                                    <th>Include</th>
+                                    <th>Lvl</th>
+                                    <th>Sem</th>
+                                    <th>Code</th>
+                                    <th>Title</th>
+                                    <th>Crd</th>
+                                    <th>GPV</th>
+                                    <th>Grade</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
                         <tbody></tbody>
                     </table>
                 </div>

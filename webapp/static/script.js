@@ -231,42 +231,77 @@ function buildCharts() {
 }
 
 function renderDataTable() {
-    if(appData.length === 0) {
-        document.getElementById('editEmptyState').style.display = 'flex';
-        document.getElementById('dataTableContainer').style.display = 'none';
-        return;
-    }
     document.getElementById('editEmptyState').style.display = 'none';
     document.getElementById('dataTableContainer').style.display = 'block';
 
     const tbody = document.querySelector('#masterDataTable tbody');
     tbody.innerHTML = '';
 
+    if(appData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding: 20px;">No courses available. Click "+ Add Course" to add one manually.</td></tr>';
+        return;
+    }
+
     appData.forEach((row, idx) => {
         let tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><input type="checkbox" data-idx="${idx}" class="chk-include" ${row.Include ? 'checked' : ''}></td>
-            <td>${row.academic_level}</td>
-            <td>${row.semester}</td>
-            <td>${row.course_code}</td>
-            <td>${row.course_title}</td>
-            <td>${row.credits}</td>
-            <td>${row.gpv}</td>
-            <td>${row.grade}</td>
+            <td><input type="checkbox" data-idx="${idx}" class="chk-include" ${row.Include !== false ? 'checked' : ''}></td>
+            <td><input type="text" data-idx="${idx}" class="edit-lvl" value="${row.academic_level || ''}" style="width: 40px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
+            <td><input type="text" data-idx="${idx}" class="edit-sem" value="${row.semester || ''}" style="width: 40px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
+            <td><input type="text" data-idx="${idx}" class="edit-code" value="${row.course_code || ''}" style="width: 80px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
+            <td><input type="text" data-idx="${idx}" class="edit-title" value="${row.course_title || ''}" style="width: 150px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; border-radius: 4px; padding-left: 5px;"></td>
+            <td><input type="number" data-idx="${idx}" class="edit-crd" value="${row.credits || 0}" style="width: 50px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
+            <td><input type="number" step="0.01" data-idx="${idx}" class="edit-gpv" value="${row.gpv || 0}" style="width: 60px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
+            <td><input type="text" data-idx="${idx}" class="edit-grade" value="${row.grade || ''}" style="width: 50px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
+            <td><button onclick="deleteCourse(${idx})" class="btn-secondary" style="padding: 4px 8px; font-size: 0.8rem; background: rgba(255,0,0,0.1); color: #ff4d4d; border: 1px solid #ff4d4d; width: auto; min-width: unset;">Delete</button></td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-window.saveTableChanges = function() {
-    const checkboxes = document.querySelectorAll('.chk-include');
-    checkboxes.forEach(chk => {
-        let idx = parseInt(chk.getAttribute('data-idx'));
-        appData[idx].Include = chk.checked;
+window.addNewCourse = function() {
+    appData.push({
+        Include: true,
+        academic_level: "1",
+        semester: "1",
+        course_code: "NEW 1000",
+        course_title: "New Subject",
+        credits: 2,
+        gpv: 0.0,
+        grade: "--"
     });
+    renderDataTable();
+}
+
+window.deleteCourse = function(idx) {
+    if(confirm("Are you sure you want to delete this course?")) {
+        appData.splice(idx, 1);
+        renderDataTable();
+        saveTableChanges(false); // background save
+    }
+}
+
+window.saveTableChanges = function(showAlert = true) {
+    const rows = document.querySelectorAll('#masterDataTable tbody tr');
+    if (appData.length > 0 && rows.length === appData.length) {
+        rows.forEach((tr, idx) => {
+            appData[idx].Include = tr.querySelector('.chk-include').checked;
+            appData[idx].academic_level = tr.querySelector('.edit-lvl').value;
+            appData[idx].semester = tr.querySelector('.edit-sem').value;
+            appData[idx].course_code = tr.querySelector('.edit-code').value;
+            appData[idx].course_title = tr.querySelector('.edit-title').value;
+            appData[idx].credits = parseFloat(tr.querySelector('.edit-crd').value) || 0;
+            appData[idx].gpv = parseFloat(tr.querySelector('.edit-gpv').value) || 0;
+            appData[idx].grade = tr.querySelector('.edit-grade').value;
+        });
+    }
+
     if(!currentUser) saveLocal();
     else saveCloud();
-    alert("Changes saved locally. Dashboard metrics updated.");
+    
+    if (showAlert) {
+        alert("Changes saved locally. Dashboard metrics updated.");
+    }
 }
 
 function renderSemesterOverview() {
