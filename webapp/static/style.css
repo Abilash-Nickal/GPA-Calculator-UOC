@@ -225,7 +225,7 @@ table {
     overflow: hidden;
 }
 th, td {
-    padding: 12px 15px;
+    padding: 8px 10px;
     text-align: left;
     border-bottom: 1px solid rgba(235, 128, 68, 0.1);
 }
@@ -233,6 +233,13 @@ th {
     background-color: rgba(217, 108, 52, 0.1);
     color: #d96c34;
     font-family: 'Oswald', sans-serif;
+}
+
+#masterDataTable input[type="text"], 
+#masterDataTable input[type="number"] {
+    padding: 4px 8px;
+    margin-bottom: 0;
+    border: 1px solid rgba(235, 128, 68, 0.2) !important;
 }
 
 .target-card {
