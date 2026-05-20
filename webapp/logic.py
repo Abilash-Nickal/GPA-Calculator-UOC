@@ -97,6 +97,11 @@ def process_combined_data(all_data):
         
     df_final = pd.DataFrame(final_rows)
     df_final = df_final.sort_values(by=['academic_level', 'semester', 'course_code']).reset_index(drop=True)
+    
+    # Replace pandas NaN with None so it serializes properly to JSON null
+    import numpy as np
+    df_final = df_final.replace({np.nan: None})
+    
     return df_final, None
 
 def get_classification(cgpa):
