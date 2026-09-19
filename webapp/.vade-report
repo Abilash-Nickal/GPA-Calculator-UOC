@@ -1,0 +1,47 @@
+## Vercel Web Analytics Installation
+
+Successfully installed and configured Vercel Web Analytics for this Flask application.
+
+### Changes Made:
+
+**Modified:**
+- `templates/index.html` - Added Vercel Web Analytics script
+
+### Implementation Details:
+
+1. **Framework Identification**: Identified this as a Flask (Python) application with server-side HTML rendering.
+
+2. **Documentation Review**: Fetched the latest official Vercel Analytics documentation from https://vercel.com/docs/analytics/quickstart to ensure up-to-date implementation.
+
+3. **Implementation Approach**: For Flask/server-side rendered applications, the recommended approach is to inject the Vercel Analytics script directly into HTML templates using the CDN URL, rather than installing the npm package `@vercel/analytics`.
+
+4. **Script Injection**: Added the following script tag to the `<head>` section of `index.html`:
+   ```html
+   <!-- Vercel Web Analytics -->
+   <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
+   ```
+
+5. **Script Loading**: Used `defer` attribute to ensure the script loads asynchronously without blocking page rendering, following Vercel's best practices.
+
+### Why This Approach:
+
+- **Framework-appropriate**: Flask serves HTML templates, so CDN-based script injection is the correct approach
+- **No npm dependencies**: This is a Python project without a JavaScript build system, so using the CDN script avoids unnecessary tooling
+- **Automatic tracking**: The script automatically tracks page views and web vitals without additional configuration
+- **Minimal overhead**: The `defer` attribute ensures analytics don't impact page load performance
+
+### Next Steps for Full Activation:
+
+To enable analytics data collection on Vercel:
+1. Ensure the project is deployed to Vercel
+2. Enable Web Analytics in the Vercel dashboard (Project Settings > Analytics)
+3. Analytics data will appear in the dashboard after deployment and user visits
+
+### Testing:
+
+- ✅ Python syntax validation passed
+- ✅ HTML structure preserved
+- ✅ No linting errors (no linter configured)
+- ✅ No tests to run (no test suite configured)
+
+The implementation is complete and ready for deployment.
