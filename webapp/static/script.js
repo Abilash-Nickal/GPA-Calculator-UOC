@@ -29,7 +29,10 @@ function navigateTo(pageId) {
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    if(pageId === 'home') updateHomeDashboard();
+    if(pageId === 'home') {
+        updateHomeDashboard();
+        setTimeout(triggerChartsResize, 60);
+    }
     if(pageId === 'edit-data') renderDataTable();
     if(pageId === 'semester-overview') renderSemesterOverview();
     if(pageId === 'target-tracker') updateTargetTracker();
@@ -148,7 +151,13 @@ async function updateHomeDashboard() {
 function buildCharts() {
     let included = appData.filter(d => d.Include === true);
     
-    // Pie Chart
+    // Shared responsive config for Plotly
+    const chartConfig = {
+        responsive: true,
+        displayModeBar: false
+    };
+
+    // 1. Pie Chart (Grade Distribution)
     let grades = {};
     included.forEach(d => {
         let g = d.grade || 'Other';
@@ -159,14 +168,19 @@ function buildCharts() {
         values: Object.values(grades),
         labels: Object.keys(grades),
         type: 'pie',
-        hole: 0.4,
+        hole: 0.42,
         textinfo: 'label+percent',
         textposition: 'inside',
+        automargin: true,
         marker: { colors: ['#d96c34', '#e2875b', '#eba181', '#f3bcad', '#fbe7dc', '#8c8f9c', '#1a1c29', '#d1d4db'] }
     }];
-    Plotly.newPlot('pieChart', pieData, {margin: {t:10, b:10, l:10, r:10}, showlegend: false}, {displayModeBar: false});
+    Plotly.newPlot('pieChart', pieData, {
+        autosize: true,
+        margin: {t: 15, b: 15, l: 15, r: 15},
+        showlegend: false
+    }, chartConfig);
 
-    // Line Chart
+    // 2. Line Chart (SGPA Trend)
     let semMap = {};
     included.forEach(d => {
         let key = `L${d.academic_level} - S${d.semester}`;
@@ -189,16 +203,17 @@ function buildCharts() {
         mode: 'lines+markers+text',
         text: yVals.map(v => v.toFixed(2)),
         textposition: 'top center',
-        line: {color: '#d96c34', width: 2},
+        line: {color: '#d96c34', width: 2.5},
         marker: {size: 8, color: '#d96c34'}
     }];
     Plotly.newPlot('lineChart', lineData, {
-        margin: {t:25, b:20, l:30, r:20}, 
-        yaxis: {range: [0, 4.3]},
-        xaxis: {showgrid: false}
-    }, {displayModeBar: false});
+        autosize: true,
+        margin: {t: 30, b: 40, l: 35, r: 35}, 
+        yaxis: {range: [0, 4.3], automargin: true},
+        xaxis: {showgrid: false, automargin: true}
+    }, chartConfig);
 
-    // Grade Bar Chart
+    // 3. Grade Bar Chart
     let gradeOrder = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "E", "F"];
     let gradeCounts = {};
     gradeOrder.forEach(g => gradeCounts[g] = 0);
@@ -225,12 +240,13 @@ function buildCharts() {
         textposition: 'auto'
     }];
     Plotly.newPlot('gradeBarChart', gradeBarData, {
-        margin: {t:20, b:30, l:40, r:20},
-        xaxis: {showgrid: false},
-        yaxis: {title: 'Count', showgrid: true, gridcolor: 'rgba(235,128,68,0.1)'}
-    }, {displayModeBar: false});
+        autosize: true,
+        margin: {t: 20, b: 35, l: 35, r: 20},
+        xaxis: {showgrid: false, automargin: true},
+        yaxis: {title: 'Count', showgrid: true, gridcolor: 'rgba(235,128,68,0.1)', automargin: true}
+    }, chartConfig);
 
-    // Sem Bar Chart
+    // 4. Sem Bar Chart
     let sXVals = Object.keys(semMap).sort();
     let sCreds = sXVals.map(k => semMap[k].cred);
     let sSubjs = sXVals.map(k => included.filter(d => `L${d.academic_level} - S${d.semester}` === k).length);
@@ -241,11 +257,48 @@ function buildCharts() {
     ];
     Plotly.newPlot('semBarChart', semBarData, {
         barmode: 'group',
-        margin: {t:20, b:30, l:40, r:20},
-        legend: {orientation: 'h', y: 1.1, x: 1, xanchor: 'right', yanchor: 'bottom'},
-        xaxis: {showgrid: false},
-        yaxis: {title: 'Count', showgrid: true, gridcolor: 'rgba(235,128,68,0.1)'}
-    }, {displayModeBar: false});
+        autosize: true,
+        margin: {t: 20, b: 35, l: 35, r: 20},
+        legend: {orientation: 'h', y: 1.15, x: 1, xanchor: 'right', yanchor: 'bottom'},
+        xaxis: {showgrid: false, automargin: true},
+        yaxis: {title: 'Count', showgrid: true, gridcolor: 'rgba(235,128,68,0.1)', automargin: true}
+    }, chartConfig);
+
+    // Initial resize pass after layout paints
+    requestAnimationFrame(() => {
+        triggerChartsResize();
+    });
+}
+
+// Window resize & ResizeObserver listeners to keep charts 100% fluid & responsive
+function triggerChartsResize() {
+    ['pieChart', 'lineChart', 'gradeBarChart', 'semBarChart'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.data && window.Plotly) {
+            Plotly.Plots.resize(el);
+        }
+    });
+}
+
+let chartResizeDebounce;
+window.addEventListener('resize', () => {
+    clearTimeout(chartResizeDebounce);
+    chartResizeDebounce = setTimeout(triggerChartsResize, 100);
+});
+
+if (typeof ResizeObserver !== 'undefined') {
+    const chartObserver = new ResizeObserver(() => {
+        clearTimeout(chartResizeDebounce);
+        chartResizeDebounce = setTimeout(triggerChartsResize, 100);
+    });
+    window.addEventListener('DOMContentLoaded', () => {
+        const homePage = document.getElementById('page-home');
+        if (homePage) chartObserver.observe(homePage);
+        ['pieChart', 'lineChart', 'gradeBarChart', 'semBarChart'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) chartObserver.observe(el);
+        });
+    });
 }
 
 function renderDataTable() {

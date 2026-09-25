@@ -7,7 +7,7 @@
     <meta name="keywords" content="UOC GPA, FOT GPA, University of Colombo GPA Calculator, Abilash GPA, Semester GPA UOC, Colombo University Technology Faculty">
     <meta name="author" content="Abilash">
     <title>UOC FOT GPA Calculator | University of Colombo Faculty of Technology</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.3">
     <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     
     <!-- Google AdSense Auto Ads -->
@@ -200,25 +200,25 @@
                     </div>
                 </div>
 
-                <div class="grid-1-3" style="margin-top: 30px;">
-                    <div class="ui-card" id="pieChartContainer" style="display:none;">
+                <div class="charts-grid">
+                    <div class="ui-card chart-card" id="pieChartContainer" style="display:none;">
                         <div class="ui-card-header">GRADE DISTRIBUTION</div>
-                        <div id="pieChart" style="height: 250px;"></div>
+                        <div class="chart-wrapper" id="pieChart"></div>
                     </div>
-                    <div class="ui-card" id="lineChartContainer" style="display:none;">
+                    <div class="ui-card chart-card" id="lineChartContainer" style="display:none;">
                         <div class="ui-card-header">PERCENTAGE (SGPA TREND)</div>
-                        <div id="lineChart" style="height: 250px;"></div>
+                        <div class="chart-wrapper" id="lineChart"></div>
                     </div>
                 </div>
 
-                <div class="grid-2" style="margin-top: 30px;">
-                    <div class="ui-card" id="gradeBarContainer" style="display:none; padding: 0;">
-                        <div style="padding: 20px 20px 0 20px; font-weight: 700; font-family: 'Oswald', sans-serif; font-size: 0.9rem; color: #1a1c29; letter-spacing: 1px;">GRADE COUNTS OVERVIEW</div>
-                        <div id="gradeBarChart" style="height: 250px;"></div>
+                <div class="charts-grid">
+                    <div class="ui-card chart-card" id="gradeBarContainer" style="display:none; padding: 0;">
+                        <div class="chart-card-title">GRADE COUNTS OVERVIEW</div>
+                        <div class="chart-wrapper" id="gradeBarChart"></div>
                     </div>
-                    <div class="ui-card" id="semBarContainer" style="display:none; padding: 0;">
-                        <div style="padding: 20px 20px 0 20px; font-weight: 700; font-family: 'Oswald', sans-serif; font-size: 0.9rem; color: #1a1c29; letter-spacing: 1px;">CREDITS & SUBJECTS PER SEMESTER</div>
-                        <div id="semBarChart" style="height: 250px;"></div>
+                    <div class="ui-card chart-card" id="semBarContainer" style="display:none; padding: 0;">
+                        <div class="chart-card-title">CREDITS & SUBJECTS PER SEMESTER</div>
+                        <div class="chart-wrapper" id="semBarChart"></div>
                     </div>
                 </div>
             </div>
@@ -500,6 +500,6 @@
         </div>
     </aside>
 
-    <script src="{{ url_for('static', filename='script.js') }}?v=2.1"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=2.3"></script>
 </body>
 </html>
