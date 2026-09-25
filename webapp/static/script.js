@@ -16,11 +16,18 @@ navItems.forEach(item => {
 });
 
 function navigateTo(pageId) {
+    // Automatically close mobile drawer when navigating
+    document.getElementById('appSidebar')?.classList.remove('open');
+    document.getElementById('sidebarBackdrop')?.classList.remove('open');
+    document.body.classList.remove('drawer-open');
+
     navItems.forEach(i => i.classList.remove('active'));
     document.querySelector(`[data-page="${pageId}"]`)?.classList.add('active');
     
     pages.forEach(p => p.classList.remove('active'));
     document.getElementById(`page-${pageId}`).classList.add('active');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if(pageId === 'home') updateHomeDashboard();
     if(pageId === 'edit-data') renderDataTable();
@@ -69,6 +76,15 @@ async function recalculateMetrics() {
     } catch(e) { return null; }
 }
 
+function updateStickySummary(cgpa = "0.00", credits = "0 Cr", standing = "Awaiting Data") {
+    const stickyCGPA = document.getElementById('stickyCGPA');
+    const stickyCredits = document.getElementById('stickyCredits');
+    const stickyStanding = document.getElementById('stickyStanding');
+    if (stickyCGPA) stickyCGPA.innerText = cgpa;
+    if (stickyCredits) stickyCredits.innerText = credits;
+    if (stickyStanding) stickyStanding.innerText = standing;
+}
+
 async function updateHomeDashboard() {
     if (appData.length === 0) {
         document.getElementById('homeEmptyState').style.display = 'flex';
@@ -77,6 +93,7 @@ async function updateHomeDashboard() {
         document.getElementById('pieChartContainer').style.display = 'none';
         document.getElementById('lineChartContainer').style.display = 'none';
         document.getElementById('standingBadge').innerText = "AWAITING DATA";
+        updateStickySummary("0.00", "0 Cr", "Awaiting Data");
         return;
     }
 
@@ -98,6 +115,7 @@ async function updateHomeDashboard() {
         document.getElementById('valPerformance').innerText = perf.toFixed(1) + "%";
         document.getElementById('standingBadge').innerText = metrics.classification;
         document.getElementById('snapStanding').innerText = metrics.classification;
+        updateStickySummary(metrics.final_gpa.toFixed(2), `${metrics.total_credits} Cr`, metrics.classification);
     }
 
     // Targets Snapshot
@@ -244,16 +262,48 @@ function renderDataTable() {
 
     appData.forEach((row, idx) => {
         let tr = document.createElement('tr');
+        tr.className = 'course-tr-card';
         tr.innerHTML = `
-            <td><input type="checkbox" data-idx="${idx}" class="chk-include" ${row.Include !== false ? 'checked' : ''}></td>
-            <td><input type="text" data-idx="${idx}" class="edit-lvl" value="${row.academic_level || ''}" style="width: 40px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
-            <td><input type="text" data-idx="${idx}" class="edit-sem" value="${row.semester || ''}" style="width: 40px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
-            <td><input type="text" data-idx="${idx}" class="edit-code" value="${row.course_code || ''}" style="width: 80px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
-            <td><input type="text" data-idx="${idx}" class="edit-title" value="${row.course_title || ''}" style="width: 150px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; border-radius: 4px; padding-left: 5px;"></td>
-            <td><input type="number" data-idx="${idx}" class="edit-crd" value="${row.credits || 0}" style="width: 50px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
-            <td><input type="number" step="0.01" data-idx="${idx}" class="edit-gpv" value="${row.gpv || 0}" style="width: 60px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
-            <td><input type="text" data-idx="${idx}" class="edit-grade" value="${row.grade || ''}" style="width: 50px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: inherit; text-align: center; border-radius: 4px;"></td>
-            <td><button onclick="deleteCourse(${idx})" class="btn-secondary" style="padding: 4px 8px; font-size: 0.8rem; background: rgba(255,0,0,0.1); color: #ff4d4d; border: 1px solid #ff4d4d; width: auto; min-width: unset;">Delete</button></td>
+            <td data-label="Include" class="col-chk">
+                <label class="chk-container">
+                    <input type="checkbox" data-idx="${idx}" class="chk-include" ${row.Include !== false ? 'checked' : ''}>
+                    <span class="chk-label-text">Include</span>
+                </label>
+            </td>
+            <td data-label="Lvl" class="col-lvl">
+                <span class="mobile-cell-label">Level</span>
+                <input type="text" data-idx="${idx}" class="edit-lvl" value="${escapeHtml(row.academic_level || '')}" placeholder="Lvl" aria-label="Level">
+            </td>
+            <td data-label="Sem" class="col-sem">
+                <span class="mobile-cell-label">Sem</span>
+                <input type="text" data-idx="${idx}" class="edit-sem" value="${escapeHtml(row.semester || '')}" placeholder="Sem" aria-label="Semester">
+            </td>
+            <td data-label="Code" class="col-code">
+                <span class="mobile-cell-label">Course Code</span>
+                <input type="text" data-idx="${idx}" class="edit-code" value="${escapeHtml(row.course_code || '')}" placeholder="e.g. IA 1201" aria-label="Course Code">
+            </td>
+            <td data-label="Title" class="col-title">
+                <span class="mobile-cell-label">Course Title</span>
+                <input type="text" data-idx="${idx}" class="edit-title" value="${escapeHtml(row.course_title || '')}" placeholder="Course Title" aria-label="Course Title">
+            </td>
+            <td data-label="Credits" class="col-crd">
+                <span class="mobile-cell-label">Credits</span>
+                <input type="number" data-idx="${idx}" class="edit-crd" value="${row.credits !== undefined ? row.credits : 0}" placeholder="Credits" aria-label="Credits">
+            </td>
+            <td data-label="GPV" class="col-gpv">
+                <span class="mobile-cell-label">GPV</span>
+                <input type="number" step="0.01" data-idx="${idx}" class="edit-gpv" value="${row.gpv !== undefined ? row.gpv : 0}" placeholder="GPV" aria-label="GPV">
+            </td>
+            <td data-label="Grade" class="col-grade">
+                <span class="mobile-cell-label">Grade</span>
+                <input type="text" data-idx="${idx}" class="edit-grade" value="${escapeHtml(row.grade || '')}" placeholder="Grade" aria-label="Grade">
+            </td>
+            <td data-label="Action" class="col-action">
+                <button type="button" onclick="deleteCourse(${idx})" class="btn-delete-course" aria-label="Delete course ${idx + 1}">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    <span>Delete</span>
+                </button>
+            </td>
         `;
         tbody.appendChild(tr);
     });
@@ -538,8 +588,44 @@ document.getElementById('feedbackForm')?.addEventListener('submit', async (e) =>
     }
 });
 
+// Helper: Escape HTML string
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+// Mobile Drawer Navigation
+function initMobileDrawer() {
+    const toggleBtn = document.getElementById('mobileMenuToggle');
+    const closeBtn = document.getElementById('sidebarCloseBtn');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const sidebar = document.getElementById('appSidebar');
+
+    function openDrawer() {
+        sidebar?.classList.add('open');
+        backdrop?.classList.add('open');
+        document.body.classList.add('drawer-open');
+    }
+
+    function closeDrawer() {
+        sidebar?.classList.remove('open');
+        backdrop?.classList.remove('open');
+        document.body.classList.remove('drawer-open');
+    }
+
+    toggleBtn?.addEventListener('click', openDrawer);
+    closeBtn?.addEventListener('click', closeDrawer);
+    backdrop?.addEventListener('click', closeDrawer);
+}
+
 // Init
 window.onload = () => {
+    initMobileDrawer();
     loadLocal();
     navigateTo('home');
 };
