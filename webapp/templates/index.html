@@ -7,7 +7,7 @@
     <meta name="keywords" content="UOC GPA, FOT GPA, University of Colombo GPA Calculator, Abilash GPA, Semester GPA UOC, Colombo University Technology Faculty">
     <meta name="author" content="Abilash">
     <title>UOC FOT GPA Calculator | University of Colombo Faculty of Technology</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.4">
     <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     
     <!-- Google AdSense Auto Ads -->
@@ -219,6 +219,28 @@
                     <div class="ui-card chart-card" id="semBarContainer" style="display:none; padding: 0;">
                         <div class="chart-card-title">CREDITS & SUBJECTS PER SEMESTER</div>
                         <div class="chart-wrapper" id="semBarChart"></div>
+                    </div>
+                </div>
+
+                <!-- Subjects Summary Table -->
+                <div class="ui-card home-subjects-card" id="homeSubjectsCard" style="display:none; margin-top:24px; padding:0;">
+                    <div class="home-subjects-header">
+                        <span class="chart-card-title" style="padding:0; display:inline-block;">ALL SUBJECTS</span>
+                        <span id="homeSubjectsCount" class="subjects-count-badge"></span>
+                    </div>
+                    <div class="table-responsive-container" style="margin-top:0; border-radius:0 0 1.5rem 1.5rem;">
+                        <table class="home-summary-table" id="homeSubjectsTable">
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Sem</th>
+                                    <th>Cr</th>
+                                    <th>Grade</th>
+                                    <th>GPV</th>
+                                </tr>
+                            </thead>
+                            <tbody id="homeSubjectsTbody"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -500,6 +522,6 @@
         </div>
     </aside>
 
-    <script src="{{ url_for('static', filename='script.js') }}?v=2.3"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=2.4"></script>
 </body>
 </html>

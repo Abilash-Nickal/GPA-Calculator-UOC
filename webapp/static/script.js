@@ -95,6 +95,7 @@ async function updateHomeDashboard() {
         document.getElementById('homeTargets').style.display = 'none';
         document.getElementById('pieChartContainer').style.display = 'none';
         document.getElementById('lineChartContainer').style.display = 'none';
+        document.getElementById('homeSubjectsCard').style.display = 'none';
         document.getElementById('standingBadge').innerText = "AWAITING DATA";
         updateStickySummary("0.00", "0 Cr", "Awaiting Data");
         return;
@@ -107,6 +108,7 @@ async function updateHomeDashboard() {
     document.getElementById('lineChartContainer').style.display = 'block';
     document.getElementById('gradeBarContainer').style.display = 'block';
     document.getElementById('semBarContainer').style.display = 'block';
+    document.getElementById('homeSubjectsCard').style.display = 'block';
 
     const metrics = await recalculateMetrics();
     if(metrics) {
@@ -144,8 +146,45 @@ async function updateHomeDashboard() {
     document.getElementById('snapProgress').innerText = pctDone.toFixed(1) + "% done";
     document.getElementById('snapRemaining').innerText = Math.max(remaining, 0) + " / " + totalDegCredits;
 
-    // Build Charts
+    // Build Charts & Subjects Table
     buildCharts();
+    buildSubjectsTable();
+}
+
+function buildSubjectsTable() {
+    let included = appData.filter(d => d.Include === true);
+    const tbody = document.getElementById('homeSubjectsTbody');
+    const badge = document.getElementById('homeSubjectsCount');
+    tbody.innerHTML = '';
+    badge.innerText = included.length + ' SUBJECTS';
+
+    // Sort by level, then semester, then course title
+    let sorted = [...included].sort((a, b) => {
+        if (a.academic_level !== b.academic_level) return a.academic_level - b.academic_level;
+        if (a.semester !== b.semester) return a.semester - b.semester;
+        return (a.course_title || '').localeCompare(b.course_title || '');
+    });
+
+    let lastSem = null;
+    sorted.forEach(d => {
+        let semKey = `L${d.academic_level}-S${d.semester}`;
+        if (semKey !== lastSem) {
+            // Separator row for each new semester
+            const sepRow = document.createElement('tr');
+            sepRow.innerHTML = `<td colspan="5" class="sem-separator">Level ${d.academic_level} &nbsp;&mdash;&nbsp; Semester ${d.semester}</td>`;
+            tbody.appendChild(sepRow);
+            lastSem = semKey;
+        }
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${d.course_title || '-'}</td>
+            <td><span class="sem-label">L${d.academic_level}&thinsp;·&thinsp;S${d.semester}</span></td>
+            <td>${d.credits}</td>
+            <td><span class="grade-chip">${d.grade || '-'}</span></td>
+            <td><span class="gpv-pill">${d.gpv}</span></td>
+        `;
+        tbody.appendChild(tr);
+    });
 }
 
 function buildCharts() {
