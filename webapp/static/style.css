@@ -779,8 +779,206 @@ td.sem-separator {
 }
 
 /* ==========================================================================
-   Buttons (Accessible Min 44px-48px Touch Targets)
+   Help & Guide Page Components
    ========================================================================== */
+.help-section-card {
+    margin-bottom: 20px;
+}
+
+.help-card-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.help-section-icon {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(217, 108, 52, 0.1);
+    color: #d96c34;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-section-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.help-section-body {
+    flex: 1;
+}
+
+.help-section-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1c29;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.help-section-desc {
+    font-size: 0.88rem;
+    color: #5a5d6e;
+    line-height: 1.55;
+    margin: 0;
+}
+
+/* Step-by-step list */
+.help-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.help-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.88rem;
+    color: #1a1c29;
+    line-height: 1.5;
+}
+
+.help-step-num {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #d96c34;
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+
+/* Info grid (2-col info blocks) */
+.help-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 6px;
+}
+
+.help-info-item {
+    background: rgba(217, 108, 52, 0.05);
+    border: 1px solid rgba(217, 108, 52, 0.15);
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.help-info-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #d96c34;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.help-info-text {
+    font-size: 0.85rem;
+    color: #1a1c29;
+    line-height: 1.5;
+}
+
+/* Screenshot image block */
+.help-img-block {
+    margin-top: 14px;
+}
+
+.help-img-block img {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid rgba(235, 128, 68, 0.15);
+}
+
+.help-img-caption {
+    text-align: center;
+    color: #8c8f9c;
+    font-size: 0.78rem;
+    margin-top: 6px;
+    margin-bottom: 0;
+}
+
+/* Features grid */
+.help-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 6px;
+}
+
+.help-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    background: rgba(217, 108, 52, 0.04);
+    border-radius: 12px;
+    border: 1px solid rgba(217, 108, 52, 0.12);
+    font-size: 0.85rem;
+    color: #1a1c29;
+    line-height: 1.5;
+}
+
+.help-feature-item svg {
+    flex-shrink: 0;
+    color: #d96c34;
+    margin-top: 2px;
+}
+
+/* Support card */
+.help-support-card {
+    background: linear-gradient(135deg, rgba(217, 108, 52, 0.04) 0%, rgba(217, 108, 52, 0.08) 100%);
+    border: 1px dashed rgba(217, 108, 52, 0.4) !important;
+}
+
+/* Buy Me a Coffee button */
+.help-bmc-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #FFDD00;
+    color: #000;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.help-bmc-btn:hover {
+    opacity: 0.85;
+}
+
+/* Video embed */
+.help-video-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(235, 128, 68, 0.18);
+}
+
+/* Responsive: stack info grids on mobile */
+@media (max-width: 600px) {
+    .help-info-grid,
+    .help-features-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
 .btn-primary, .btn-secondary {
     min-height: 48px;
     padding: 12px 20px;

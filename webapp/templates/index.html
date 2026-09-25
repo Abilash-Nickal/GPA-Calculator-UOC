@@ -7,7 +7,7 @@
     <meta name="keywords" content="UOC GPA, FOT GPA, University of Colombo GPA Calculator, Abilash GPA, Semester GPA UOC, Colombo University Technology Faculty">
     <meta name="author" content="Abilash">
     <title>UOC FOT GPA Calculator | University of Colombo Faculty of Technology</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.6">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.7">
     <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     
     <!-- Google AdSense Auto Ads -->
@@ -359,113 +359,201 @@
                 <div class="top-header">
                     <div class="logo-text">ACADEMIC TRACKER</div>
                 </div>
-                <h1 class="dashboard-title">HELP & GUIDE</h1>
-                <p class="dashboard-subtitle">Home > Help & Guide</p>
-                <hr style="border:0; border-top: 1px solid rgba(235, 128, 68, 0.2); margin: 20px 0;">
-                
-                <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; text-transform:uppercase; display:flex; align-items:center; gap:12px;">
-                    <div style="background:#fbe7dc; padding:8px; border-radius:8px; display:flex;"><svg width="24" height="24" viewBox="0 0 24 24" fill="#d96c34"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
-                    Demo Video (How to Use)
-                </h3>
-                <div style="margin-bottom: 20px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(235,128,68,0.2);">
-                    <iframe width="100%" height="400" src="https://www.youtube.com/embed/kfrPbWMncnc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="page-title-block">
+                    <h1 class="dashboard-title">HELP &amp; GUIDE</h1>
+                    <p class="dashboard-subtitle">Home &gt; Help &amp; Guide</p>
                 </div>
 
-                <hr style="border:0; border-top: 1px solid rgba(235, 128, 68, 0.2); margin: 20px 0;">
-                <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; text-transform:uppercase;">Data Import Guide</h3>
-                <ol>
-                    <li>Open your <strong>Result Sheet</strong> in the student portal.</li>
-                    <li><strong>Select & Copy</strong> the entire results table.</li>
-                    <li>Navigate to <strong>INPUT RESULTS</strong> in this app.</li>
-                    <li><strong>Paste</strong> the copied text and click <strong>PROCESS DATA</strong>.</li>
-                </ol>
-                <img src="{{ url_for('static', filename='image.png') }}" style="width: 100%; border-radius: 10px; margin-top: 10px;" alt="Copy your results">
-                <p style="text-align: center; color: #8c8f9c; font-size: 0.8rem; margin-top: 5px; margin-bottom: 20px;">1. Copy your results from the University Portal</p>
-                
-                <img src="{{ url_for('static', filename='image copy.png') }}" style="width: 100%; border-radius: 10px; margin-top: 10px;" alt="Paste into the Input Results section">
-                <p style="text-align: center; color: #8c8f9c; font-size: 0.8rem; margin-top: 5px;">2. Paste into the Input Results section</p>
-
-                <hr style="border:0; border-top: 1px solid rgba(235, 128, 68, 0.2); margin: 20px 0;">
-                <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; text-transform:uppercase;">Data Storage & Cloud Sync</h3>
-                <p>
-                    <strong>Never Lose Your Progress!</strong><br>
-                    - <strong>Guest Mode (Local Save):</strong> By default, clicking <strong>Save Progress</strong> securely stores your data right inside your web browser.<br>
-                    - <strong>Cloud Sync:</strong> Enter your Student ID and click <strong>LOGIN / SYNC</strong>. Once logged in, your tracker data is securely synced to the cloud.
-                </p>
-
-                <hr style="border:0; border-top: 1px solid rgba(235, 128, 68, 0.2); margin: 20px 0;">
-                <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; text-transform:uppercase;">Strategic Planning (Target Tracker)</h3>
-                <p>Use the Target Tracker to calculate exactly what GPA you need in your remaining subjects to reach your goal.</p>
-                <img src="{{ url_for('static', filename='image copy 2.png') }}" style="width: 100%; border-radius: 10px; margin-top: 10px;" alt="Strategic Planning">
-                <p style="text-align: center; color: #8c8f9c; font-size: 0.8rem; margin-top: 5px;">Strategic Planning in Target Tracker</p>
-
-                <hr style="border:0; border-top: 1px solid rgba(235, 128, 68, 0.2); margin: 20px 0;">
-                <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; text-transform:uppercase;">Manage Your Data (Master Data)</h3>
-                <p>In Master Data, you can manually adjust results, add remarks, and reorder subjects for a perfect dashboard view.</p>
-                <img src="{{ url_for('static', filename='image copy 3.png') }}" style="width: 100%; border-radius: 10px; margin-top: 10px;" alt="Master Data">
-                <p style="text-align: center; color: #8c8f9c; font-size: 0.8rem; margin-top: 5px;">Managing and reordering in Master Data</p>
-
-                <hr style="border:0; border-top: 1px solid rgba(235, 128, 68, 0.2); margin: 20px 0;">
-                <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; text-transform:uppercase;">Install as a Mobile App (PWA)</h3>
-                <div class="grid-2">
-                    <div>
-                        <strong>🍎 For iPhone (Safari)</strong><br>
-                        1. Open Safari and go to your tracker URL.<br>
-                        2. Tap the <strong>Share</strong> button (square with arrow up).<br>
-                        3. Scroll and tap <strong>"Add to Home Screen"</strong>.<br>
-                        4. Tap <strong>"Add"</strong> in the top right.
+                <!-- Demo Video -->
+                <div class="ui-card help-section-card">
+                    <div class="ui-card-header">DEMO VIDEO</div>
+                    <div class="help-card-inner">
+                        <div class="help-section-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+                        </div>
+                        <div class="help-section-body">
+                            <div class="help-section-title">Watch: How to Use the Tracker</div>
+                            <p class="help-section-desc">See the full walkthrough of importing results, tracking your GPA, and using the Target Tracker.</p>
+                        </div>
                     </div>
-                    <div>
-                        <strong>🤖 For Android (Chrome)</strong><br>
-                        1. Open Chrome and go to your tracker URL.<br>
-                        2. Tap the <strong>Menu</strong> (three dots ⋮).<br>
-                        3. Tap <strong>"Add to Home screen"</strong> or <strong>"Install App"</strong>.<br>
-                        4. Tap <strong>"Add"</strong> to confirm.
+                    <div class="help-video-wrap">
+                        <iframe width="100%" height="380" src="https://www.youtube.com/embed/kfrPbWMncnc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                 </div>
 
-                <hr style="border:0; border-top: 1px solid rgba(235, 128, 68, 0.2); margin: 20px 0;">
-                <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; letter-spacing:1.5px; text-transform:uppercase;">Core Features Overview</h3>
-                <ul>
-                    <li><strong>Cloud Sync & Local Backup</strong>: Save data locally or sync across devices by logging in.</li>
-                    <li><strong>Dashboard Overview</strong>: Real-time CGPA and SGPA trend analysis.</li>
-                    <li><strong>Master Data</strong>: Edit, reorder, and manually adjust course results.</li>
-                    <li><strong>Semester Overview</strong>: Level-by-level performance breakdown.</li>
-                    <li><strong>Target Tracker</strong>: Plan your path to success.</li>
-                    <li><strong>Data Import</strong>: Intelligent parsing from university portal results.</li>
-                </ul>
+                <!-- Data Import -->
+                <div class="ui-card help-section-card">
+                    <div class="ui-card-header">DATA IMPORT</div>
+                    <div class="help-card-inner">
+                        <div class="help-section-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        </div>
+                        <div class="help-section-body">
+                            <div class="help-section-title">Import from University Portal</div>
+                            <p class="help-section-desc">Copy your results directly from the SIS portal and paste them in — the app handles the rest.</p>
+                        </div>
+                    </div>
+                    <div class="help-steps">
+                        <div class="help-step"><span class="help-step-num">1</span><span>Open your <strong>Result Sheet</strong> in the UOC student portal.</span></div>
+                        <div class="help-step"><span class="help-step-num">2</span><span><strong>Select all</strong> and <strong>copy</strong> the results table.</span></div>
+                        <div class="help-step"><span class="help-step-num">3</span><span>Navigate to <strong>INPUT RESULTS</strong> in the sidebar.</span></div>
+                        <div class="help-step"><span class="help-step-num">4</span><span><strong>Paste</strong> the text and tap <strong>PROCESS DATA</strong>.</span></div>
+                    </div>
+                    <div class="help-img-block">
+                        <img src="{{ url_for('static', filename='image.png') }}" alt="Copy results from University Portal">
+                        <p class="help-img-caption">Step 1 — Copy results from the University Portal</p>
+                    </div>
+                    <div class="help-img-block">
+                        <img src="{{ url_for('static', filename='image copy.png') }}" alt="Paste into Input Results">
+                        <p class="help-img-caption">Step 2 — Paste into the Input Results section</p>
+                    </div>
+                </div>
 
-                <!-- Monetization / Developer Support -->
-                <div style="margin-top: 40px; margin-bottom: 40px;">
-                    <h3 style="font-family:'Oswald', sans-serif; color:#d96c34; margin-bottom:15px;">Support the Developer</h3>
-                    <div class="ui-card" style="background: linear-gradient(135deg, rgba(217, 108, 52, 0.05) 0%, rgba(217, 108, 52, 0.1) 100%); border: 1px dashed #d96c34;">
-                        <div class="ui-card-header">SUPPORT THE DEVELOPER</div>
-                        <div style="padding: 10px;">
-                            <h3 style="color:#d96c34; font-family:'Oswald',sans-serif; margin-bottom:10px; margin-top:0;">KEEP THIS SERVICE ONLINE</h3>
-                            <p style="font-size:0.9rem; line-height:1.5;">
-                                This app is developed and maintained for free to help fellow <b>UOC</b> students. 
-                                Running cloud servers and maintenance costs money. If this tracker helped you, 
-                                consider a small contribution to keep it running!
-                            </p>
-                            <div style="display:flex; gap:15px; margin-top:20px;">
-                                <a href="https://www.buymeacoffee.com/abilashan" target="_blank" style="text-decoration:none;">
-                                    <div style="background:#FFDD00; color:#000000; padding:10px 20px; border-radius:10px; font-weight:700; display:flex; align-items:center; gap:10px; font-size:0.9rem;">
-                                        <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" width="20">
-                                        Buy Me A Coffee
-                                    </div>
-                                </a>
+                <!-- Cloud Sync -->
+                <div class="ui-card help-section-card">
+                    <div class="ui-card-header">DATA STORAGE</div>
+                    <div class="help-card-inner">
+                        <div class="help-section-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+                        </div>
+                        <div class="help-section-body">
+                            <div class="help-section-title">Never Lose Your Progress</div>
+                            <p class="help-section-desc">Your data is always saved — locally in your browser, or in the cloud when you log in.</p>
+                        </div>
+                    </div>
+                    <div class="help-info-grid">
+                        <div class="help-info-item">
+                            <div class="help-info-label">GUEST MODE</div>
+                            <div class="help-info-text">Data is saved locally inside your browser. No account needed. Works offline.</div>
+                        </div>
+                        <div class="help-info-item">
+                            <div class="help-info-label">CLOUD SYNC</div>
+                            <div class="help-info-text">Enter your Student ID and tap <strong>LOGIN / SYNC</strong> to save your data securely to the cloud and access it from any device.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Target Tracker -->
+                <div class="ui-card help-section-card">
+                    <div class="ui-card-header">TARGET TRACKER</div>
+                    <div class="help-card-inner">
+                        <div class="help-section-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.88-11.71L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z"/></svg>
+                        </div>
+                        <div class="help-section-body">
+                            <div class="help-section-title">Plan Your Academic Path</div>
+                            <p class="help-section-desc">The Target Tracker calculates the exact GPA you need per remaining semester to hit First Class, 2nd Upper, or 2nd Lower.</p>
+                        </div>
+                    </div>
+                    <div class="help-img-block">
+                        <img src="{{ url_for('static', filename='image copy 2.png') }}" alt="Target Tracker">
+                        <p class="help-img-caption">Strategic planning in the Target Tracker</p>
+                    </div>
+                </div>
+
+                <!-- Master Data -->
+                <div class="ui-card help-section-card">
+                    <div class="ui-card-header">MASTER DATA</div>
+                    <div class="help-card-inner">
+                        <div class="help-section-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        </div>
+                        <div class="help-section-body">
+                            <div class="help-section-title">Edit &amp; Manage Course Data</div>
+                            <p class="help-section-desc">Manually adjust grades, add remarks, toggle subjects in/out of GPA calculations, and reorder entries.</p>
+                        </div>
+                    </div>
+                    <div class="help-img-block">
+                        <img src="{{ url_for('static', filename='image copy 3.png') }}" alt="Master Data">
+                        <p class="help-img-caption">Editing and reordering in Master Data</p>
+                    </div>
+                </div>
+
+                <!-- Install as App -->
+                <div class="ui-card help-section-card">
+                    <div class="ui-card-header">INSTALL AS APP (PWA)</div>
+                    <div class="help-card-inner">
+                        <div class="help-section-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+                        </div>
+                        <div class="help-section-body">
+                            <div class="help-section-title">Use as a Mobile App — No Download Needed</div>
+                            <p class="help-section-desc">Add the tracker to your home screen for a native app experience.</p>
+                        </div>
+                    </div>
+                    <div class="help-info-grid">
+                        <div class="help-info-item">
+                            <div class="help-info-label">🍎 IPHONE (SAFARI)</div>
+                            <div class="help-steps" style="margin-top:10px;">
+                                <div class="help-step"><span class="help-step-num">1</span><span>Open Safari and visit the tracker URL.</span></div>
+                                <div class="help-step"><span class="help-step-num">2</span><span>Tap the <strong>Share</strong> button (square with arrow up).</span></div>
+                                <div class="help-step"><span class="help-step-num">3</span><span>Scroll down and tap <strong>"Add to Home Screen"</strong>.</span></div>
+                                <div class="help-step"><span class="help-step-num">4</span><span>Tap <strong>"Add"</strong> in the top right.</span></div>
+                            </div>
+                        </div>
+                        <div class="help-info-item">
+                            <div class="help-info-label">🤖 ANDROID (CHROME)</div>
+                            <div class="help-steps" style="margin-top:10px;">
+                                <div class="help-step"><span class="help-step-num">1</span><span>Open Chrome and visit the tracker URL.</span></div>
+                                <div class="help-step"><span class="help-step-num">2</span><span>Tap the <strong>Menu</strong> (three dots ⋮).</span></div>
+                                <div class="help-step"><span class="help-step-num">3</span><span>Tap <strong>"Add to Home screen"</strong> or <strong>"Install App"</strong>.</span></div>
+                                <div class="help-step"><span class="help-step-num">4</span><span>Tap <strong>"Add"</strong> to confirm.</span></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Footer AdSense Placeholder -->
-                <!--
-                <div style="text-align: center; margin-top: 20px;">
-                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-xxxxxxxxxxxxxxxx" data-ad-slot="xxxxxxxxxx" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                <!-- Features Overview -->
+                <div class="ui-card help-section-card">
+                    <div class="ui-card-header">FEATURES OVERVIEW</div>
+                    <div class="help-features-grid">
+                        <div class="help-feature-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+                            <div><strong>Cloud Sync &amp; Local Backup</strong><br>Save locally or sync across devices by logging in.</div>
+                        </div>
+                        <div class="help-feature-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z M7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
+                            <div><strong>Dashboard Overview</strong><br>Real-time CGPA, SGPA trend charts and grade analysis.</div>
+                        </div>
+                        <div class="help-feature-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            <div><strong>Master Data</strong><br>Edit, reorder, and manually adjust course results.</div>
+                        </div>
+                        <div class="help-feature-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M4 9h4v11H4zM16 13h4v7h-4zM10 4h4v16h-4z"/></svg>
+                            <div><strong>Semester Overview</strong><br>Level-by-level SGPA breakdown with subject tables.</div>
+                        </div>
+                        <div class="help-feature-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.88 11.71L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z"/></svg>
+                            <div><strong>Target Tracker</strong><br>Know exactly what GPA you need to reach your goal.</div>
+                        </div>
+                        <div class="help-feature-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                            <div><strong>Smart Data Import</strong><br>Paste results directly from the SIS portal — auto-parsed.</div>
+                        </div>
+                    </div>
                 </div>
-                -->
+
+                <!-- Support Developer -->
+                <div class="ui-card help-section-card help-support-card">
+                    <div class="ui-card-header">SUPPORT THE PROJECT</div>
+                    <div class="help-card-inner">
+                        <div class="help-section-icon" style="color:#d96c34;">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        </div>
+                        <div class="help-section-body">
+                            <div class="help-section-title">Keep This Service Free</div>
+                            <p class="help-section-desc">This app is built and maintained for free by a fellow UOC student. If it helped you, consider buying a coffee to keep the servers running!</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px;">
+                        <a href="https://www.buymeacoffee.com/abilashan" target="_blank" class="help-bmc-btn">
+                            <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" width="18" alt="BMC">
+                            Buy Me a Coffee
+                        </a>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Page: Feedback -->
@@ -535,6 +623,6 @@
         </div>
     </aside>
 
-    <script src="{{ url_for('static', filename='script.js') }}?v=2.6"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=2.7"></script>
 </body>
 </html>
