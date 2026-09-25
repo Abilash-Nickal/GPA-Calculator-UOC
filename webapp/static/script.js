@@ -459,39 +459,82 @@ function renderSemesterOverview() {
     let levels = [...new Set(included.map(d => d.academic_level))].sort();
 
     levels.forEach(lvl => {
-        let lvlHtml = `<h3 style="color:#d96c34; margin-top:30px; text-transform:uppercase;">Academic Level ${lvl}</h3>`;
         let sems = [...new Set(included.filter(d => d.academic_level == lvl).map(d => d.semester))].sort();
-        
-        let gridHtml = `<div class="grid-${sems.length}">`;
+
+        // Level heading
+        let lvlEl = document.createElement('div');
+        lvlEl.innerHTML = `<h3 class="sem-overview-level-title">Academic Level ${lvl}</h3>`;
+        container.appendChild(lvlEl);
+
+        // GPA summary cards row
+        let cardsGrid = document.createElement('div');
+        cardsGrid.className = `grid-${Math.min(sems.length, 4)}`;
         sems.forEach(sem => {
             let group = included.filter(d => d.academic_level == lvl && d.semester == sem);
             let sCred = group.reduce((sum, d) => sum + d.credits, 0);
-            let sPts = group.reduce((sum, d) => sum + (d.credits * d.gpv), 0);
-            let sGpa = sCred > 0 ? (sPts / sCred) : 0;
-            
-            gridHtml += `
-            <div class="ui-card" style="margin-bottom:0;">
-                <div class="ui-card-header">Sem ${sem}</div>
+            let sPts  = group.reduce((sum, d) => sum + (d.credits * d.gpv), 0);
+            let sGpa  = sCred > 0 ? (sPts / sCred) : 0;
+            let card  = document.createElement('div');
+            card.className = 'ui-card';
+            card.style.marginBottom = '0';
+            card.innerHTML = `
+                <div class="ui-card-header">SEM ${sem}</div>
                 <div class="ui-card-body">
                     <div class="ui-card-value" style="color:#d96c34; font-size:1.8rem;">${sGpa.toFixed(4)}</div>
                 </div>
-                <div class="ui-card-subtext">CREDITS: ${sCred} &nbsp;·&nbsp; SUBJECTS: ${group.length}</div>
-            </div>`;
+                <div class="ui-card-subtext">CREDITS: ${sCred} &nbsp;·&nbsp; SUBJECTS: ${group.length}</div>`;
+            cardsGrid.appendChild(card);
         });
-        gridHtml += `</div><div class="grid-${sems.length}" style="margin-top:20px;">`;
-        
+        container.appendChild(cardsGrid);
+
+        // Unified styled table for all sems in this level
+        let tableWrap = document.createElement('div');
+        tableWrap.className = 'ui-card home-subjects-card';
+        tableWrap.style.cssText = 'margin-top:20px; padding:0;';
+
+        // Count subjects in this level
+        let lvlSubjects = included.filter(d => d.academic_level == lvl);
+
+        tableWrap.innerHTML = `
+            <div class="home-subjects-header">
+                <span class="chart-card-title" style="padding:0; display:inline-block;">LEVEL ${lvl} — SUBJECTS</span>
+                <span class="subjects-count-badge">${lvlSubjects.length} SUBJECTS</span>
+            </div>
+            <div class="table-responsive-container" style="margin-top:0; border-radius:0 0 1.5rem 1.5rem;">
+                <table class="home-summary-table">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Sem</th>
+                            <th>Cr</th>
+                            <th>Grade</th>
+                            <th>GPV</th>
+                        </tr>
+                    </thead>
+                    <tbody id="semTbody-L${lvl}"></tbody>
+                </table>
+            </div>`;
+        container.appendChild(tableWrap);
+
+        let tbody = tableWrap.querySelector(`#semTbody-L${lvl}`);
         sems.forEach(sem => {
             let group = included.filter(d => d.academic_level == lvl && d.semester == sem);
-            let tblHtml = `<table><tr><th>Course</th><th>GPV</th></tr>`;
-            group.forEach(g => {
-                tblHtml += `<tr><td>${g.course_title}</td><td>${g.gpv}</td></tr>`;
+            // Semester separator row
+            let sepRow = document.createElement('tr');
+            sepRow.innerHTML = `<td colspan="5" class="sem-separator">Semester ${sem}</td>`;
+            tbody.appendChild(sepRow);
+            // Subject rows
+            group.forEach(d => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${d.course_title || '-'}</td>
+                    <td><span class="sem-label">L${d.academic_level}&thinsp;·&thinsp;S${d.semester}</span></td>
+                    <td>${d.credits}</td>
+                    <td><span class="grade-chip">${d.grade || '-'}</span></td>
+                    <td><span class="gpv-pill">${d.gpv}</span></td>`;
+                tbody.appendChild(tr);
             });
-            tblHtml += `</table>`;
-            gridHtml += `<div>${tblHtml}</div>`;
         });
-        gridHtml += `</div>`;
-        
-        container.innerHTML += lvlHtml + gridHtml;
     });
 }
 

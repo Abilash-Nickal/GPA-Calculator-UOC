@@ -691,6 +691,19 @@ td.sem-separator {
     background: rgba(217, 108, 52, 0.05);
 }
 
+.sem-overview-level-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #d96c34;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 32px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(217, 108, 52, 0.2);
+}
+
 /* ==========================================================================
    Buttons (Accessible Min 44px-48px Touch Targets)
    ========================================================================== */
