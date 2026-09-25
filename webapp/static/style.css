@@ -1040,6 +1040,11 @@ select:focus {
 
     .top-header {
         margin-bottom: 8px;
+        justify-content: flex-end;
+    }
+
+    .top-header .logo-text {
+        display: none;
     }
 
     .grid-4 {

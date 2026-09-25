@@ -7,7 +7,7 @@
     <meta name="keywords" content="UOC GPA, FOT GPA, University of Colombo GPA Calculator, Abilash GPA, Semester GPA UOC, Colombo University Technology Faculty">
     <meta name="author" content="Abilash">
     <title>UOC FOT GPA Calculator | University of Colombo Faculty of Technology</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.1">
     <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     
     <!-- Google AdSense Auto Ads -->
@@ -137,18 +137,13 @@
                     <div class="logo-text">ACADEMIC TRACKER</div>
                     <div class="standing-badge" id="standingBadge">AWAITING DATA</div>
                 </div>
-                <div class="grid-1-3">
-                    <div>
-                        <h1 class="dashboard-title">HOME</h1>
-                        <p class="dashboard-subtitle">Home > Tracker</p>
-                    </div>
-                    <div style="display: flex; justify-content: flex-end; align-items: center;">
-                        <button class="btn-primary" style="width: auto;" onclick="navigateTo('input-results')">+ INPUT NEW RESULTS</button>
-                    </div>
+                <div class="page-title-block">
+                    <h1 class="dashboard-title">HOME</h1>
+                    <p class="dashboard-subtitle">Home > Tracker</p>
                 </div>
 
                 <div id="homeEmptyState" class="ui-notice">
-                    <div>Please navigate to 'INPUT RESULTS' on the left or use the button above to load your academic data.</div>
+                    <div>Please navigate to 'INPUT RESULTS' using the bottom bar or menu to load your academic data.</div>
                 </div>
 
                 <div class="grid-4" id="homeMetrics" style="display: none;">
@@ -505,6 +500,6 @@
         </div>
     </aside>
 
-    <script src="{{ url_for('static', filename='script.js') }}?v=2.0"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=2.1"></script>
 </body>
 </html>
