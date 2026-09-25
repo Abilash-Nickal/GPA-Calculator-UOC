@@ -151,41 +151,111 @@ async function updateHomeDashboard() {
     buildSubjectsTable();
 }
 
+// Grade filter & sort state
+let _subjectsFilter = 'ALL';
+let _subjectsSortAsc = false; // false = GPV high→low (default)
+
+const GRADE_ORDER = ['A+','A','A-','B+','B','B-','C+','C','C-','D+','D','E','F'];
+const GRADE_GROUPS = {
+    'ALL': null,
+    'A':   ['A+','A','A-'],
+    'B':   ['B+','B','B-'],
+    'C':   ['C+','C','C-'],
+    'D':   ['D+','D'],
+    'EF':  ['E','F']
+};
+
 function buildSubjectsTable() {
+    _subjectsFilter = 'ALL';
+    _subjectsSortAsc = false;
+    // Reset filter pill UI
+    document.querySelectorAll('.grade-filter-btn').forEach(b => b.classList.remove('active'));
+    const allBtn = document.querySelector('[data-filter="ALL"]');
+    if (allBtn) allBtn.classList.add('active');
+    const sortBtn = document.getElementById('gradeSortBtn');
+    if (sortBtn) { sortBtn.classList.remove('asc'); sortBtn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M3 18h6v-2H3v2zm0-5h12v-2H3v2zm0-7v2h18V6H3z"/></svg> GPV ↓`; }
+    _renderSubjectsTable();
+}
+
+function _renderSubjectsTable() {
     let included = appData.filter(d => d.Include === true);
     const tbody = document.getElementById('homeSubjectsTbody');
     const badge = document.getElementById('homeSubjectsCount');
     tbody.innerHTML = '';
-    badge.innerText = included.length + ' SUBJECTS';
 
-    // Sort by level, then semester, then course title
-    let sorted = [...included].sort((a, b) => {
-        if (a.academic_level !== b.academic_level) return a.academic_level - b.academic_level;
-        if (a.semester !== b.semester) return a.semester - b.semester;
-        return (a.course_title || '').localeCompare(b.course_title || '');
-    });
+    // Apply grade group filter
+    const allowedGrades = GRADE_GROUPS[_subjectsFilter];
+    let filtered = allowedGrades ? included.filter(d => allowedGrades.includes(d.grade)) : included;
+    badge.innerText = filtered.length + ' SUBJECTS';
 
-    let lastSem = null;
-    sorted.forEach(d => {
-        let semKey = `L${d.academic_level}-S${d.semester}`;
-        if (semKey !== lastSem) {
-            // Separator row for each new semester
-            const sepRow = document.createElement('tr');
-            sepRow.innerHTML = `<td colspan="5" class="sem-separator">Level ${d.academic_level} &nbsp;&mdash;&nbsp; Semester ${d.semester}</td>`;
-            tbody.appendChild(sepRow);
-            lastSem = semKey;
-        }
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${d.course_title || '-'}</td>
-            <td><span class="sem-label">L${d.academic_level}&thinsp;·&thinsp;S${d.semester}</span></td>
-            <td>${d.credits}</td>
-            <td><span class="grade-chip">${d.grade || '-'}</span></td>
-            <td><span class="gpv-pill">${d.gpv}</span></td>
-        `;
-        tbody.appendChild(tr);
-    });
+    if (filtered.length === 0) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = `<td colspan="5" style="text-align:center; padding:20px; color:#8c8f9c; font-family:'Oswald',sans-serif; letter-spacing:1px; font-size:0.85rem;">No subjects found for this grade</td>`;
+        tbody.appendChild(emptyRow);
+        return;
+    }
+
+    if (_subjectsFilter === 'ALL') {
+        // Group by level → semester with separator rows, alphabetical within group
+        let sorted = [...filtered].sort((a, b) => {
+            if (a.academic_level !== b.academic_level) return a.academic_level - b.academic_level;
+            if (a.semester !== b.semester) return a.semester - b.semester;
+            return (a.course_title || '').localeCompare(b.course_title || '');
+        });
+        let lastSem = null;
+        sorted.forEach(d => {
+            let semKey = `L${d.academic_level}-S${d.semester}`;
+            if (semKey !== lastSem) {
+                const sepRow = document.createElement('tr');
+                sepRow.innerHTML = `<td colspan="5" class="sem-separator">Level ${d.academic_level} &nbsp;&mdash;&nbsp; Semester ${d.semester}</td>`;
+                tbody.appendChild(sepRow);
+                lastSem = semKey;
+            }
+            tbody.appendChild(_makeSubjectRow(d));
+        });
+    } else {
+        // Sort by GPV high→low (or low→high if toggled)
+        let sorted = [...filtered].sort((a, b) => {
+            let gpvDiff = _subjectsSortAsc ? (a.gpv - b.gpv) : (b.gpv - a.gpv);
+            if (gpvDiff !== 0) return gpvDiff;
+            // Secondary: grade order
+            return GRADE_ORDER.indexOf(a.grade) - GRADE_ORDER.indexOf(b.grade);
+        });
+        sorted.forEach(d => tbody.appendChild(_makeSubjectRow(d)));
+    }
 }
+
+function _makeSubjectRow(d) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td>${d.course_title || '-'}</td>
+        <td><span class="sem-label">L${d.academic_level}&thinsp;·&thinsp;S${d.semester}</span></td>
+        <td>${d.credits}</td>
+        <td><span class="grade-chip">${d.grade || '-'}</span></td>
+        <td><span class="gpv-pill">${d.gpv}</span></td>`;
+    return tr;
+}
+
+window.filterSubjectsTable = function(filter) {
+    _subjectsFilter = filter;
+    document.querySelectorAll('.grade-filter-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.filter === filter);
+    });
+    _renderSubjectsTable();
+};
+
+window.toggleSubjectsSort = function() {
+    _subjectsSortAsc = !_subjectsSortAsc;
+    const btn = document.getElementById('gradeSortBtn');
+    if (_subjectsSortAsc) {
+        btn.classList.add('asc');
+        btn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M3 18h6v-2H3v2zm0-5h12v-2H3v2zm0-7v2h18V6H3z"/></svg> GPV ↑`;
+    } else {
+        btn.classList.remove('asc');
+        btn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M3 18h6v-2H3v2zm0-5h12v-2H3v2zm0-7v2h18V6H3z"/></svg> GPV ↓`;
+    }
+    if (_subjectsFilter !== 'ALL') _renderSubjectsTable();
+};
 
 function buildCharts() {
     let included = appData.filter(d => d.Include === true);

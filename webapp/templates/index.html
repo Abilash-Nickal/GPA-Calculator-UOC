@@ -7,7 +7,7 @@
     <meta name="keywords" content="UOC GPA, FOT GPA, University of Colombo GPA Calculator, Abilash GPA, Semester GPA UOC, Colombo University Technology Faculty">
     <meta name="author" content="Abilash">
     <title>UOC FOT GPA Calculator | University of Colombo Faculty of Technology</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.5">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.6">
     <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     
     <!-- Google AdSense Auto Ads -->
@@ -227,6 +227,19 @@
                     <div class="home-subjects-header">
                         <span class="chart-card-title" style="padding:0; display:inline-block;">ALL SUBJECTS</span>
                         <span id="homeSubjectsCount" class="subjects-count-badge"></span>
+                    </div>
+                    <!-- Grade Filter Bar -->
+                    <div class="grade-filter-bar" id="gradeFilterBar">
+                        <button class="grade-filter-btn active" data-filter="ALL" onclick="filterSubjectsTable('ALL')">ALL</button>
+                        <button class="grade-filter-btn" data-filter="A" onclick="filterSubjectsTable('A')">A</button>
+                        <button class="grade-filter-btn" data-filter="B" onclick="filterSubjectsTable('B')">B</button>
+                        <button class="grade-filter-btn" data-filter="C" onclick="filterSubjectsTable('C')">C</button>
+                        <button class="grade-filter-btn" data-filter="D" onclick="filterSubjectsTable('D')">D</button>
+                        <button class="grade-filter-btn grade-filter-btn--danger" data-filter="EF" onclick="filterSubjectsTable('EF')">E · F</button>
+                        <button class="grade-sort-btn" id="gradeSortBtn" onclick="toggleSubjectsSort()" title="Toggle sort order">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M3 18h6v-2H3v2zm0-5h12v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                            GPV ↓
+                        </button>
                     </div>
                     <div class="table-responsive-container" style="margin-top:0; border-radius:0 0 1.5rem 1.5rem;">
                         <table class="home-summary-table" id="homeSubjectsTable">
@@ -522,6 +535,6 @@
         </div>
     </aside>
 
-    <script src="{{ url_for('static', filename='script.js') }}?v=2.5"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=2.6"></script>
 </body>
 </html>
